@@ -69,15 +69,18 @@
                     <span id="typing-text"></span>
                     <span class="cursor">|</span>
                 </div>
-                <li>I am a penultimate Computer Science student at Universitas Indoesia, currently in my 6th semester.</li>
-                <li>I have a keen interest in Data Science and Machine Learning, but I am also open to other fields.</li>
-                <li>Outside of my studies, I am a big fan of reading, running, Formula 1, and the I like to watch trending movies on letterboxd.</li>
-                <li>If anything you saw interested you, feel free to contact me :)</li>
+                <li>I'm Muhammad Yusuf Haikal, a Computer Science student at Universitas Indonesia with a passion for all things data, currently in my 6th semester.</li>
+                <li>I’m curious by nature and driven by discovery, whether it’s building models in machine learning, diving into data, or simply learning something new.</li>
+                <li>I’m especially excited about how data science and AI can solve real-world problems, but I also enjoy branching into other fields where I can grow and contribute.</li>
+                <li>Beyond academics, I enjoy reading, running, following Formula 1, and exploring trending films on Letterboxd.</li>
+                <li>I’m always open to collaborating on innovative projects or discussing opportunities. Feel free to reach out via email at yusufhaikaln7@gmail.com or connect with me on LinkedIn :)</li>
             </div>
             <div class="flex h-full flex-wrap items-end justify-end space-x-1">
                 <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/"><img class="max-w-[20px]" src="/linkedin.png" alt="linkedin.png"></a>
                 <p class="inline sm:invisible sm:block sm:pr-0">_</p>
                 <a href="https://github.com/ternaksapi"><img class="max-w-[20px]" src="/github.png" alt="github.png"></a>
+                <p class="inline sm:invisible sm:block sm:pr-0">_</p>
+                <a href="https://medium.com/@yusufhaikall"><img class="max-w-[20px]" src="/medium.png" alt="medium.png"></a>
                 <p class="inline sm:invisible sm:block sm:pr-0">_</p>
                 <a href="https://www.instagram.com/ysfhaikal/"><img class="max-w-[20px]" src="/instagram.png" alt="instagram.png"></a>
             </div>

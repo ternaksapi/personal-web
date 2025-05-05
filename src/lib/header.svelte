@@ -11,6 +11,10 @@
     <a href="/cv" class="transition-all duration-150 {$page.url.pathname === '/cv' ? 'bg-white text-[#000758]' : 'text-[#decff1] hover:bg-white hover:text-[#000758]'}">
         <span tabindex="0" role="text"> [cv] </span>
     </a>
+    <p class="inline sm:invisible sm:block sm:pr-0 text-[#decff1]">•</p>
+    <a href="/runs" class="transition-all duration-150 {$page.url.pathname === '/runs' ? 'bg-white text-[#000758]' : 'text-[#decff1] hover:bg-white hover:text-[#000758]'}">
+        <span tabindex="0" role="text"> [runs] </span>
+    </a>
 </div>
 <style>
 </style>

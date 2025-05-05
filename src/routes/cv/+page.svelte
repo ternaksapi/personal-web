@@ -19,6 +19,12 @@
                 <!---->
             </a>
             <div class='flex flex-wrap gap-x-2 pt-1 text-sm text-slate-500 print:hidden'>
+                <div class='ring-offset-background focus-visible:ring-ring flex flex-col items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-slate-500 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:inline-flex print:hidden'>
+                    <a href="https://drive.google.com/file/d/1yt0c7Gyb8ZOdWaMyym6_XuZdZAmUGA0p/view?usp=sharing">
+                        <span tabindex="0" role="text">[Resume]</span>
+                        <!---->
+                    </a>
+                </div>
                 <div class=' ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>
                     <a href="mailto:yusufhaikaln7@gmail.com">
                         <span tabindex="0" role="text">[Email]</span>
@@ -34,12 +40,6 @@
                 <div class='ring-offset-background focus-visible:ring-ring flex flex-col items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-slate-500 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:inline-flex print:hidden'>
                     <a href="https://github.com/ternaksapi">
                         <span tabindex="0" role="text">[GitHub]</span>
-                        <!---->
-                    </a>
-                </div>
-                <div class='ring-offset-background focus-visible:ring-ring flex flex-col items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-slate-500 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:inline-flex print:hidden'>
-                    <a href="https://www.instagram.com/ysfhaikal/">
-                        <span tabindex="0" role="text">[Instagram]</span>
                         <!---->
                     </a>
                 </div>
