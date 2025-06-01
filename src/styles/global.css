@@ -9,12 +9,12 @@
     font-style: normal;
 }
 
+/* Base styles that work for both themes */
 body {
-    background: #422d5d;
     margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Apply font to all text elements */
 h1, h2, h3, h4, h5, h6,
 p, a, li, span, div,
 .text-slate-300,
@@ -22,11 +22,7 @@ p, a, li, span, div,
 .text-slate-500 {
     font-family: 'PPMondwest', monospace;
     font-weight: normal;
-}
-
-/* Keep the existing color styles */
-h1,h2,h3,h4,a,p,li {
-    color: #decff1;
+    transition: color 0.3s ease;
 }
 
 .cursor {
@@ -37,5 +33,247 @@ h1,h2,h3,h4,a,p,li {
 @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
+}
+
+/* DARK THEME STYLES */
+[data-theme="dark"] body {
+    background: #000000;
+}
+
+[data-theme="dark"] h1, 
+[data-theme="dark"] h2, 
+[data-theme="dark"] h3, 
+[data-theme="dark"] h4, 
+[data-theme="dark"] a, 
+[data-theme="dark"] p, 
+[data-theme="dark"] li {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .cursor {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .text-slate-100 {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .text-slate-200 {
+    color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .text-slate-300 {
+    color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .text-slate-400 {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .text-slate-500 {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .text-slate-600 {
+    color: #64748b !important;
+}
+
+[data-theme="dark"] .bg-slate-700 {
+    background-color: #374151 !important;
+}
+
+[data-theme="dark"] .bg-slate-600 {
+    background-color: #4b5563 !important;
+}
+
+[data-theme="dark"] .bg-slate-800 {
+    background-color: #1f2937 !important;
+}
+
+[data-theme="dark"] .body {
+    background: #000000 !important;
+}
+
+[data-theme="dark"] input, 
+[data-theme="dark"] textarea {
+    background-color: #374151 !important;
+    color: #ffffff !important;
+    border-color: #4b5563 !important;
+}
+
+[data-theme="dark"] input::placeholder, 
+[data-theme="dark"] textarea::placeholder {
+    color: #9ca3af !important;
+}
+
+[data-theme="dark"] button {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] footer p {
+    color: #9ca3af !important;
+}
+
+/* Social media icons - black and white theme support */
+[data-theme="dark"] img.icon {
+    filter: brightness(0) invert(1); /* White icons on dark background */
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+[data-theme="light"] img.icon {
+    filter: brightness(0); /* Black icons on light background */
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+/* Icon hover effect for both themes */
+img.icon:hover {
+    opacity: 0.7;
+}
+
+/* Keep profile images and other photos normal */
+[data-theme="dark"] img:not(.icon) {
+    filter: none;
+}
+
+[data-theme="light"] img:not(.icon) {
+    filter: none;
+}
+
+/* LIGHT THEME STYLES */
+[data-theme="light"] body {
+    background: #ffffff;
+}
+
+[data-theme="light"] h1, 
+[data-theme="light"] h2, 
+[data-theme="light"] h3, 
+[data-theme="light"] h4, 
+[data-theme="light"] a, 
+[data-theme="light"] p, 
+[data-theme="light"] li {
+    color: #000000;
+}
+
+[data-theme="light"] .cursor {
+    color: #000000;
+}
+
+[data-theme="light"] .text-slate-100 {
+    color: #1e293b !important;
+}
+
+[data-theme="light"] .text-slate-200 {
+    color: #334155 !important;
+}
+
+[data-theme="light"] .text-slate-300 {
+    color: #475569 !important;
+}
+
+[data-theme="light"] .text-slate-400 {
+    color: #64748b !important;
+}
+
+[data-theme="light"] .text-slate-500 {
+    color: #71717a !important;
+}
+
+[data-theme="light"] .text-slate-600 {
+    color: #52525b !important;
+}
+
+[data-theme="light"] .bg-slate-700 {
+    background-color: #e2e8f0 !important;
+}
+
+[data-theme="light"] .bg-slate-600 {
+    background-color: #f1f5f9 !important;
+}
+
+[data-theme="light"] .bg-slate-800 {
+    background-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .body {
+    background: #ffffff !important;
+}
+
+[data-theme="light"] input, 
+[data-theme="light"] textarea {
+    background-color: #f8fafc !important;
+    color: #000000 !important;
+    border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] input::placeholder, 
+[data-theme="light"] textarea::placeholder {
+    color: #64748b !important;
+}
+
+[data-theme="light"] button {
+    color: #000000 !important;
+}
+
+[data-theme="light"] footer p {
+    color: #64748b !important;
+}
+
+/* Progress bar styles for both themes */
+[data-theme="dark"] .progress-bar {
+    background: linear-gradient(to right, #ffffff, #cccccc) !important;
+}
+
+[data-theme="light"] .progress-bar {
+    background: linear-gradient(to right, #000000, #333333) !important;
+}
+
+/* Ensure smooth transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Replace these lines in your global.css: */
+
+/* OLD - Remove this: */
+/* [data-theme="dark"] img {
+    filter: brightness(0) invert(1);
+}
+
+[data-theme="light"] img {
+    filter: none;
+} */
+
+/* NEW - Add this instead: */
+[data-theme="dark"] img.icon {
+    filter: brightness(0) invert(1);
+}
+
+[data-theme="light"] img.icon {
+    filter: none;
+}
+
+/* Social media icons - black and white theme support */
+[data-theme="dark"] img.icon {
+    filter: brightness(0) invert(1); /* White icons on dark background */
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+[data-theme="light"] img.icon {
+    filter: brightness(0); /* Black icons on light background */
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+/* Icon hover effect for both themes */
+img.icon:hover {
+    opacity: 0.7;
+}
+
+/* Keep profile images and other photos normal */
+[data-theme="dark"] img:not(.icon) {
+    filter: none;
+}
+
+[data-theme="light"] img:not(.icon) {
+    filter: none;
 }
 

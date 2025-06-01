@@ -64,8 +64,8 @@
             <!---->
             </h3>
             <div class="flex h-full w-full max-w lg flex-col items-start space-y-4">
-                <img class="max-w-[180px]" src="/front.jpeg" alt="hi.jpeg">
-                <div id="typing-container" class="text-xl text-[#decff1]">
+                <img class="max-w-[180px]" src="/front.jpg" alt="hi.jpeg">
+                <div id="typing-container" class="text-xl greeting-text">
                     <span id="typing-text"></span>
                     <span class="cursor">|</span>
                 </div>
@@ -76,17 +76,41 @@
                 <li>I’m always open to collaborating on innovative projects or discussing opportunities. Feel free to reach out via email at yusufhaikaln7@gmail.com or connect with me on LinkedIn :)</li>
             </div>
             <div class="flex h-full flex-wrap items-end justify-end space-x-1">
-                <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/"><img class="max-w-[20px]" src="/linkedin.png" alt="linkedin.png"></a>
+                <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/">
+                    <img class="max-w-[20px] icon" src="/linkedin.png" alt="linkedin.png">
+                </a>
                 <p class="inline sm:invisible sm:block sm:pr-0">_</p>
-                <a href="https://github.com/ternaksapi"><img class="max-w-[20px]" src="/github.png" alt="github.png"></a>
+                <a href="https://github.com/ternaksapi">
+                    <img class="max-w-[20px] icon" src="/github.png" alt="github.png">
+                </a>
                 <p class="inline sm:invisible sm:block sm:pr-0">_</p>
-                <a href="https://medium.com/@yusufhaikall"><img class="max-w-[20px]" src="/medium.png" alt="medium.png"></a>
+                <a href="https://medium.com/@yusufhaikall">
+                    <img class="max-w-[20px] icon" src="/medium.png" alt="medium.png">
+                </a>
                 <p class="inline sm:invisible sm:block sm:pr-0">_</p>
-                <a href="https://www.instagram.com/ysfhaikal/"><img class="max-w-[20px]" src="/instagram.png" alt="instagram.png"></a>
+                <a href="https://www.instagram.com/ysfhaikal/">
+                    <img class="max-w-[20px] icon" src="/instagram.png" alt="instagram.png">
+                </a>
             </div>
         </ul>
     </div>
 </div>
 <style>
-
+    /* Theme-aware greeting text */
+    :global([data-theme="dark"]) .greeting-text {
+        color: #ffffff;
+    }
+    
+    :global([data-theme="light"]) .greeting-text {
+        color: #000000;
+    }
+    
+    /* Ensure cursor follows the same color */
+    :global([data-theme="dark"]) .greeting-text .cursor {
+        color: #ffffff;
+    }
+    
+    :global([data-theme="light"]) .greeting-text .cursor {
+        color: #000000;
+    }
 </style>

@@ -2,6 +2,12 @@
     import "../styles/global.css";
     import { navigating } from '$app/stores';
     import { fade } from 'svelte/transition';
+    import { theme } from '$lib/theme.js';
+    import { onMount } from 'svelte';
+
+    onMount(() => {
+        theme.init();
+    });
 </script>
 
 {#if $navigating}

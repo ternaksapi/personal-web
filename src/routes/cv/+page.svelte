@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <img src="front.jpeg" alt="me.jpg" class="max-h-36 sm:max-h-36">
+        <img src="front.jpg" alt="me.jpg" class="max-h-36 sm:max-h-36">
     </section>
     <article class="max-w-lg">
         <section class="print-force-new-page flex min-h-0 scroll-mb-16 flex-col gap-y-3">
