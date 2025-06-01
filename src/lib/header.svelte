@@ -1,7 +1,8 @@
 <script>
     import { page } from '$app/stores';
-    import ThemeToggle from '$lib/ThemeToggle.svelte';
+    import ThemeToggle from '$lib/themeToggle.svelte';
 </script>
+
 
 <div class="flex flex-wrap items-center justify-between w-full">
     <div class="flex flex-wrap gap-x-1">
