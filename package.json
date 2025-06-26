@@ -20,8 +20,10 @@
 		"vite": "^5.4.11"
 	},
 	"dependencies": {
+		"@supabase/supabase-js": "^2.50.1",
 		"@tailwindcss/vite": "^4.0.0",
 		"leaflet": "^1.9.4",
-		"mapbox-gl": "^3.11.1"
+		"mapbox-gl": "^3.11.1",
+		"supabase": "^2.26.9"
 	}
 }
