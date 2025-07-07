@@ -11,7 +11,7 @@
         </a>
         <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
         <a href="/cv" class="nav-link transition-all duration-150 {$page.url.pathname === '/cv' ? 'active' : ''}">
-            <span tabindex="0" role="text"> [cv] </span>
+            <span tabindex="0" role="text"> [works] </span>
         </a>
         <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
         <a href="/runs" class="nav-link transition-all duration-150 {$page.url.pathname === '/runs' ? 'active' : ''}">

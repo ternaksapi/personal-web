@@ -98,6 +98,10 @@
     });
 </script>
 
+<svelte:head>
+    <title>Running</title>
+</svelte:head>
+
 <div class="transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10 sm:max-w-md md:max-w-lg lg:max-w-lg">
     <Header />
     
