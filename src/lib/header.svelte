@@ -21,6 +21,10 @@
         <a href="/reads" class="nav-link transition-all duration-150 {$page.url.pathname === '/reads' ? 'active' : ''}">
             <span tabindex="0" role="text"> [reads] </span>
         </a>
+        <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
+        <a href="/writes" class="nav-link transition-all duration-150 {$page.url.pathname === '/writes' ? 'active' : ''}">
+            <span tabindex="0" role="text"> [writes] </span>
+        </a>
     </div>
     
     <ThemeToggle />
