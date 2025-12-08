@@ -1,5 +1,6 @@
 <script>
     import Header from "$lib/header.svelte";
+    import Polaroid from "$lib/Polaroid.svelte";
     import { onMount, onDestroy } from 'svelte';
 
     const greetings = ["Hello!", "Hola!", "Bonjour!", "Hallo!", "Ciao!"];
@@ -67,16 +68,19 @@
             <!---->
             </h3>
             <div class="flex h-full w-full max-w lg flex-col items-start space-y-4">
-                <img class="max-w-[180px]" src="/front.jpg" alt="hi.jpeg">
-                <div id="typing-container" class="text-xl greeting-text">
+                <Polaroid 
+                    src="/front.jpg" 
+                    alt="Muhammad Yusuf Haikal" 
+                    caption="that's me!" 
+                    rotation={-3}
+                />
+                <div id="typing-container" class="text-xl greeting-text mt-4">
                     <span id="typing-text"></span>
                     <span class="cursor">|</span>
                 </div>
-                <li>I'm Muhammad Yusuf Haikal, a Computer Science student at Universitas Indonesia with a passion for all things data, currently in my 6th semester.</li>
-                <li>I’m curious by nature and driven by discovery, whether it’s building models in machine learning, diving into data, or simply learning something new.</li>
-                <li>I’m especially excited about how data science and AI can solve real-world problems, but I also enjoy branching into other fields where I can grow and contribute.</li>
-                <li>Beyond academics, I enjoy reading, running, following Formula 1, and exploring trending films on Letterboxd.</li>
-                <li>I’m always open to collaborating on innovative projects or discussing opportunities. Feel free to reach out via email at yusufhaikaln7@gmail.com or connect with me on LinkedIn :)</li>
+                <li>I'm Muhammad Yusuf Haikal, a Computer Science student at Universitas Indonesia currently in my 8th semester.</li>
+                <li>I'm driven by <a href="https://www.cs.ox.ac.uk/activities/ieg/e-library/sources/t_article.pdf" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-70">Turing's question—"Can machines think?"</a>—and the belief that today's AI tools let us build nearly anything we can imagine. I'm optimistic about how technology, especially AI, can bring more good to humanity and create positive change in the world.</li>
+                <li>Always open to collaboration and new opportunities. Reach out at yusufhaikal7@gmail.com or connect on LinkedIn :)</li>
             </div>
             <div class="flex h-full flex-wrap items-end justify-end space-x-1">
                 <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/">
