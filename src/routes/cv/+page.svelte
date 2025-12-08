@@ -4,6 +4,8 @@
 
 <script>
     import Header from "$lib/header.svelte";
+    import Polaroid from "$lib/Polaroid.svelte";
+    import ProjectCard from "$lib/ProjectCard.svelte";
 </script>
 
 <div class="transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10  sm:max-w-md md:max-w-lg lg:max-w-lg ">
@@ -49,7 +51,12 @@
                 </div>
             </div>
         </div>
-        <img src="front.jpg" alt="me.jpg" class="max-h-36 sm:max-h-36">
+        <Polaroid 
+            src="front.jpg" 
+            alt="Muhammad Yusuf Haikal" 
+            rotation={3}
+            size="100px"
+        />
     </section>
     <article class="max-w-lg">
         <section class="print-force-new-page flex min-h-0 scroll-mb-16 flex-col gap-y-3">
@@ -166,9 +173,70 @@
                         <h4 class="text-sm leading-none">Junior Supervisor, Digital Services and Cybersecurity Specialist Group</h4>
                         <p class="text-xs text-slate-500 mt-1">Jakarta, Indonesia</p>
                     </div>
-                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">July 2025 - Present</div>
+                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">July 2025 - November 2025</div>
                 </div>
-                
+                <div class="hover:none mt-2 text-xs text-slate-400">
+                    Built a Cloud Audit System with RAG pipeline for regulatory compliance across AWS, GCP, and Azure, enabling accurate evidence lookups from cloud documentation. Developed a comprehensive Cloud Security Checklist consolidating major compliance frameworks. Additionally created machine learning prototypes for credit scoring to explore modeling approaches and interpretability.
+                </div>
+                <div class="hover:none flex items-center">
+                    <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Cloud
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Cybersecurity
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            RAG
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            AWS
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            GCP
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Azure
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Credit Scoring
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Crypto/Digital Assets
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Regulatory Compliance
+                        </div>
+                    </div>
+                </div>
+                <div class="relative h-[200px] mt-4 mb-2 w-full">
+                    <div class="absolute left-0 top-[10px]">
+                        <Polaroid 
+                            src="/ojk1.jpeg" 
+                            alt="OJK Internship" 
+                            rotation={-8}
+                            size="140px"
+                        />
+                    </div>
+                    <div class="absolute left-1/2 -translate-x-1/2 top-[25px]">
+                        <Polaroid 
+                            src="/ojk2.jpeg" 
+                            alt="OJK Internship" 
+                            rotation={5}
+                            size="140px"
+                        />
+                    </div>
+                    <div class="absolute right-0 top-0">
+                        <Polaroid 
+                            src="/ojk3.jpeg" 
+                            alt="OJK Internship" 
+                            rotation={-3}
+                            size="140px"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col space-y-2 mb-6">
                 <div class="flex items-start justify-between gap-x-2 gap-y-2 text-slate-400">
                     <div class="inline-flex flex-wrap items-center justify-between gap-x-2 gap-y-2 font-semibold">
                         <h3 class="gap-x-2 text-lg font-semibold sm:text-lg">Faculty of Computer Science, Universitas Indonesia</h3>   
@@ -285,298 +353,41 @@
     <section class="print-force-new-page flex min-h-0 scroll-mb-16 flex-col gap-y-3">
         <h2 class="text-xl font-bold">Projects</h2>
         <div class="flex flex-col space-y-2">
-            <div class="flex items-center gap-x-2">
-                <h3 class="text-lg font-semibold">AI Report Generator</h3>
-                <a href="https://ai-report-generator-staging.up.railway.app/" target="_blank" class="rounded-full bg-slate-700 p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-            <p class="text-sm text-slate-400">Developed a Next.js-based AI report generator for Klinik Pintar, utilizing RAG with PostgreSQL, pgvector, and Google text embeddings to enable business analysts to create schema-driven reports with high accuracy, featuring secure API key management and multi-provider support (Google Gemini, DeepSeek).</p>
-            <div class="hover:none flex items-center">
-                <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Next.js
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        TypeScript
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        React
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        RAG
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        PostgreSQL
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        pgvector
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Prisma ORM
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Google Gemini
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        DeepSeek
-                    </div>
-                </div>
-            </div>
+            <ProjectCard 
+                title="Stocksboard"
+                description="A Python-based stock screening and backtesting platform that combines technical analysis, machine learning optimization techniques, and interactive visualization to find profitable swing trading opportunities in IDX stocks."
+                previewImage="/sb.png"
+            />
+            <ProjectCard 
+                title="Heat-Safe Route Generator"
+                description="A route-planning tool that calculates safer walking paths by integrating temperature data, heat-risk indices, and geospatial mapping. The system recommends alternative routes that minimize heat exposure, improving user comfort and safety in hot environments."
+                href="http://ristek.link/heatsafe"
+                previewImage="/hs.png"
+            />
+            <ProjectCard 
+                title="Cloud Audit Dashboard"
+                description="A monitoring dashboard that automates cloud asset auditing by aggregating configuration, compliance, and usage data from multiple cloud services. Built to help users identify misconfigurations, track security posture, and generate real-time insights for governance and operational decisions."
+                href="https://ristek.link/cloudaudit"
+            />
+            <ProjectCard 
+                title="AI Report Generator"
+                description="Developed a Next.js-based AI report generator for Klinik Pintar, utilizing RAG with PostgreSQL, pgvector, and Google text embeddings to enable business analysts to create schema-driven reports."
+                href="ristek.link/aireport"
+                previewImage="/kp.png"
+            />
+            <ProjectCard 
+                title="Food Commodity Price Forecasting Model"
+                description="Developed a time series model using LightGBM to predict food commodity prices across Indonesian provinces, integrating Google Trends and weather data."
+                href="https://ristek.link/datividia9"
+                previewImage="/fc.png"
+            />
+            <ProjectCard 
+                title="Tanam"
+                description="Led a team to design Tanam, a digital solution for farmers to adapt to climate change, using user research, personas, and high-fidelity prototypes."
+                href="http://ristek.link/TanamPrototype"
+                previewImage="/phone placeholder.png"
+            />
         </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center gap-x-2">
-                <h3 class="text-lg font-semibold">Indonesian Fire Hotspot Clustering Analysis</h3>
-                <a href="https://ristek.link/FireHotspot" target="_blank" class="rounded-full bg-slate-700 p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-            <p class="text-sm text-slate-400">Applied CRISP-DM to analyze NASA VIIRS fire hotspot data, using K-Means, DBSCAN, and Hierarchical Clustering to identify high-risk zones and inform fire mitigation strategies in Indonesia.</p>
-            <div class="hover:none flex items-center">
-                <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Python
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Scikit-learn
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        K-Means
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        DBSCAN
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Hierarchical Clustering
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Geospatial Analysis
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center gap-x-2">
-                <h3 class="text-lg font-semibold">Food Commodity Price Forecasting Model</h3>
-                <a href="https://ristek.link/datividia9" target="_blank" class="rounded-full bg-slate-700 p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-            <p class="text-sm text-slate-400">Developed a time series model using LightGBM to predict food commodity prices across Indonesian provinces, integrating Google Trends and weather data with Combined Linear-KNN imputation.</p>
-            <div class="hover:none flex items-center">
-                <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Python
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        LightGBM
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Time Series
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Data Preprocessing
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Pandas
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Optuna
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center gap-x-2">
-                <h3 class="text-lg font-semibold">COPPA Violation Risk Prediction Model</h3>
-                <a href="https://ristek.link/findit" target="_blank" class="rounded-full bg-slate-700 p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-            <p class="text-sm text-slate-400">Built an ensemble ML model (XGBoost, LightGBM, CatBoost, NN) for FIND IT! 2025 to predict COPPA risks, placing 10th out of 227 teams with SMOTE and preprocessing.</p>
-            <div class="hover:none flex items-center">
-                <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Python
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        XGBoost
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        LightGBM
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        CatBoost
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Neural Network
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        SMOTE
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center gap-x-2">
-                <h3 class="text-lg font-semibold">Global Terrorism Data Analysis and Machine Learning Model</h3>
-                <a href="https://ristek.link/NotebookGTHaikal" target="_blank" class="rounded-full bg-slate-700 p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-            <p class="text-sm text-slate-400">Analyzed 33,140 records from the Global Terrorism Database, built ML models to predict attack targets and damages, and applied clustering with K-Means and Hierarchical Agglomerative methods.</p>
-            <div class="hover:none flex items-center">
-                <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Python
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">
-                        Machine Learning
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus-ring-offset-2">  
-                        Data Visualization
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        Data Preprocessing
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        Data Analysis
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        Clustering
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center gap-x-2">
-                <h3 class="text-lg font-semibold">Intelligent Lighting System</h3>
-                <a href="https://github.com/JokoTech-SiNam24/IntelligentLighting" target="_blank" class="rounded-full bg-slate-700 p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-            <p class="text-sm text-slate-400">Developed an intelligent lighting system using LDR and PIR sensors with XMEGA-A3BU XPLAINED microcontroller to adjust lighting based on ambient light and human presence.</p>
-            <div class="hover:none flex items-center">
-                <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        AVR
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">  
-                        Embedded System
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        XMEGA-A3BU XPLAINED
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        LDR Sensor
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        PIR Sensor
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center gap-x-2">
-                <h3 class="text-lg font-semibold">Tanam</h3>
-                <a href="http://ristek.link/TanamPrototype" target="_blank" class="rounded-full bg-slate-700 p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-            <p class="text-sm text-slate-400">Led a team to design Tanam, a digital solution for farmers to adapt to climate change, using user research, personas, and high-fidelity prototypes for an intuitive UX.</p>
-            <div class="hover:none flex items-center">
-                <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        Figma
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        User Research
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        User Experience Design
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        Information Architecture
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"> 
-                        High Fidelity Design
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"> 
-                        User Persona
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"> 
-                        User Journey Mapping
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"> 
-                        Task Analysis
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"> 
-                        Wireframe
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col space-y-2">
-            <div class="flex items-center gap-x-2">
-                <h3 class="text-lg font-semibold">Pacilflix</h3>
-                <a href="https://github.com/Basis-Data-A10/Pacilflix-A10" target="_blank" class="rounded-full bg-slate-700 p-1.5 text-slate-400 hover:text-slate-200 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
-            </div>
-            <p class="text-sm text-slate-400">Built Pacilflix, a streaming platform with PostgreSQL, featuring user authentication, show browsing, reviews, downloads, and admin functions for content and subscription management.</p>
-            <div class="hover:none flex items-center">
-                <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        DBMS
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        PostgreSQL
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        HTML
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        CSS
-                    </div>
-                    <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                        JavaScript
-                    </div>
-                </div>
-            </div>
-        </div>
-        
     </section>
 </article>
 </div>
