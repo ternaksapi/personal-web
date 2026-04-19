@@ -165,6 +165,23 @@
             <div class="flex flex-col space-y-2 mb-6">
                 <div class="flex items-start justify-between gap-x-2 gap-y-2 text-slate-400">
                     <div class="inline-flex flex-wrap items-center justify-between gap-x-2 gap-y-2 font-semibold">
+                        <h3 class="gap-x-2 text-lg font-semibold sm:text-lg">Superbank</h3>   
+                    </div>
+                </div>
+                <div class="flex items-start justify-between gap-x-2 gap-y-2 text-slate-400">
+                    <div class="flex flex-col">
+                        <h4 class="text-sm leading-none">IT Audit Intern</h4>
+                        <p class="text-xs text-slate-500 mt-1">Jakarta, Indonesia</p>
+                    </div>
+                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Feb 2026 - Present</div>
+                </div>
+                <div class="hover:none mt-2 text-xs text-slate-400">
+                    Assist IT auditors in documenting audit working papers.
+                </div>
+            </div>
+            <div class="flex flex-col space-y-2 mb-6">
+                <div class="flex items-start justify-between gap-x-2 gap-y-2 text-slate-400">
+                    <div class="inline-flex flex-wrap items-center justify-between gap-x-2 gap-y-2 font-semibold">
                         <h3 class="gap-x-2 text-lg font-semibold sm:text-lg">Otoritas Jasa Keuangan</h3>   
                     </div>
                 </div>
