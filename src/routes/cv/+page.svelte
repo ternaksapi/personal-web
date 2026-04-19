@@ -173,10 +173,58 @@
                         <h4 class="text-sm leading-none">IT Audit Intern</h4>
                         <p class="text-xs text-slate-500 mt-1">Jakarta, Indonesia</p>
                     </div>
-                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Feb 2026 - Present</div>
+                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Feb 2026 - Apr 2026</div>
                 </div>
                 <div class="hover:none mt-2 text-xs text-slate-400">
-                    Assist IT auditors in documenting audit working papers.
+                    Supported internal IT audit work by reviewing audit documentation and findings across banking technology processes, documenting Minutes of Meeting for audit sessions, and building a stronger understanding of core banking workflows and control environments.
+                </div>
+                <div class="hover:none flex items-center">
+                    <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            IT Audit
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Banking Systems
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Internal Controls
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Audit Documentation
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            IT Infrastructure
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Compliance
+                        </div>
+                    </div>
+                </div>
+                <div class="relative h-[200px] mt-4 mb-2 w-full">
+                    <div class="absolute left-0 top-[10px]">
+                        <Polaroid 
+                            src="/supa1.jpeg" 
+                            alt="Superbank Internship" 
+                            rotation={-8}
+                            size="140px"
+                        />
+                    </div>
+                    <div class="absolute left-1/2 -translate-x-1/2 top-[25px]">
+                        <Polaroid 
+                            src="/supa2.jpeg" 
+                            alt="Superbank Internship" 
+                            rotation={5}
+                            size="140px"
+                        />
+                    </div>
+                    <div class="absolute right-0 top-0">
+                        <Polaroid 
+                            src="/supa3.jpeg" 
+                            alt="Superbank Internship" 
+                            rotation={-3}
+                            size="140px"
+                        />
+                    </div>
                 </div>
             </div>
             <div class="flex flex-col space-y-2 mb-6">
