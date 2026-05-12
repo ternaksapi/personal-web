@@ -165,6 +165,48 @@
             <div class="flex flex-col space-y-2 mb-6">
                 <div class="flex items-start justify-between gap-x-2 gap-y-2 text-slate-400">
                     <div class="inline-flex flex-wrap items-center justify-between gap-x-2 gap-y-2 font-semibold">
+                        <h3 class="gap-x-2 text-lg font-semibold sm:text-lg">ParagonCorp</h3>   
+                    </div>
+                </div>
+                <div class="flex items-start justify-between gap-x-2 gap-y-2 text-slate-400">
+                    <div class="flex flex-col">
+                        <h4 class="text-sm leading-none">Data Scientist Intern, CEO Office</h4>
+                        <p class="text-xs text-slate-500 mt-1">South Jakarta, Indonesia</p>
+                    </div>
+                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Apr 2026 - Present</div>
+                </div>
+                <div class="hover:none mt-2 text-xs text-slate-400">
+                    Building a Market Intelligence dashboard with AI-generated insights, including statistical sampling design for audience overlap analysis and an automated video content analysis pipeline for trend breakdown. Developing industry-contextualized Jupyter Notebooks for the ParaTech AI/ML Academy, translating ML course materials into applied use cases (e.g. churn prediction, RFM segmentation) using live company data.
+                </div>
+                <div class="hover:none flex items-center">
+                    <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Market Intelligence
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            LLM
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Video Analytics
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Data Science
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Statistical Sampling
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Machine Learning
+                        </div>
+                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            Jupyter Notebooks
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col space-y-2 mb-6">
+                <div class="flex items-start justify-between gap-x-2 gap-y-2 text-slate-400">
+                    <div class="inline-flex flex-wrap items-center justify-between gap-x-2 gap-y-2 font-semibold">
                         <h3 class="gap-x-2 text-lg font-semibold sm:text-lg">Superbank</h3>   
                     </div>
                 </div>

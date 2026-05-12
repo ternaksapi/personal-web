@@ -78,9 +78,9 @@
                     <span id="typing-text"></span>
                     <span class="cursor">|</span>
                 </div>
-                <li>I'm Muhammad Yusuf Haikal, a Computer Science student at Universitas Indonesia currently in my 8th semester.</li>
-                <li>I'm driven by <a href="https://www.cs.ox.ac.uk/activities/ieg/e-library/sources/t_article.pdf" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-70">Turing's question—"Can machines think?"</a>—and the belief that today's AI tools let us build nearly anything we can imagine. I'm optimistic about how technology, especially AI, can bring more good to humanity and create positive change in the world.</li>
-                <li>Always open to collaboration and new opportunities. Reach out at yusufhaikal7@gmail.com or connect on LinkedIn :)</li>
+                <li>I'm Haikal, a Final-Year CS student at UI, currently helping drive data-informed decisions @ ParagonCorp.</li>
+                <li>I build AI and data products. Driven by <a href="https://www.cs.ox.ac.uk/activities/ieg/e-library/sources/t_article.pdf" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-70">Turing's question</a> and the suspicion that intelligent systems can help people make genuinely better decisions.</li>
+                <li>Reach me through my <a href="mailto:yusufhaikal7@gmail.com" class="underline hover:opacity-70">email</a> or on <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/" class="underline hover:opacity-70">LinkedIn</a>.</li>
             </div>
             <div class="flex h-full flex-wrap items-end justify-end space-x-1">
                 <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/">
