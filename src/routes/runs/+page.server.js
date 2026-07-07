@@ -5,15 +5,25 @@ export async function load({ fetch }) {
         // If the response isn't OK, handle it as an error
         if (!response.ok) {
             console.error('Strava API returned status:', response.status);
+            let errorMessage = `API error: ${response.status}`;
+
+            try {
+                const errorData = await response.json();
+                errorMessage = [errorData.error, errorData.message].filter(Boolean).join(': ') || errorMessage;
+            } catch {
+                // Keep the status-only message when the endpoint does not return JSON.
+            }
+
             return {
                 activities: [],
                 stats: {
                     totalRuns: 0,
                     totalDistance: '0.0',
                     longestRun: '0.0',
-                    year: new Date().getFullYear()
+                    year: new Date().getFullYear(),
+                    bestEfforts: []
                 },
-                error: `API error: ${response.status}`
+                error: errorMessage
             };
         }
         
@@ -30,7 +40,8 @@ export async function load({ fetch }) {
                     totalRuns: data.activities.length,
                     totalDistance: '0.0',
                     longestRun: '0.0',
-                    year: new Date().getFullYear()
+                    year: new Date().getFullYear(),
+                    bestEfforts: []
                 }
             };
         } else if (data.error) {
@@ -41,9 +52,10 @@ export async function load({ fetch }) {
                     totalRuns: 0,
                     totalDistance: '0.0',
                     longestRun: '0.0',
-                    year: new Date().getFullYear()
+                    year: new Date().getFullYear(),
+                    bestEfforts: []
                 },
-                error: data.error
+                error: [data.error, data.message].filter(Boolean).join(': ')
             };
         } else {
             console.error('Unexpected API response format:', data);
@@ -53,7 +65,8 @@ export async function load({ fetch }) {
                     totalRuns: 0,
                     totalDistance: '0.0',
                     longestRun: '0.0',
-                    year: new Date().getFullYear()
+                    year: new Date().getFullYear(),
+                    bestEfforts: []
                 },
                 error: 'Unexpected API response format'
             };
@@ -66,7 +79,8 @@ export async function load({ fetch }) {
                 totalRuns: 0,
                 totalDistance: '0.0',
                 longestRun: '0.0',
-                year: new Date().getFullYear()
+                year: new Date().getFullYear(),
+                bestEfforts: []
             },
             error: error.message || 'An unexpected error occurred'
         };

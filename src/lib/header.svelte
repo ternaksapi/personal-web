@@ -22,6 +22,10 @@
             <span tabindex="0" role="text"> [reads] </span>
         </a>
         <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
+        <a href="/listens" class="nav-link transition-all duration-150 {$page.url.pathname === '/listens' ? 'active' : ''}">
+            <span tabindex="0" role="text"> [listens] </span>
+        </a>
+        <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
         <a href="/writes" class="nav-link transition-all duration-150 {$page.url.pathname === '/writes' ? 'active' : ''}">
             <span tabindex="0" role="text"> [writes] </span>
         </a>

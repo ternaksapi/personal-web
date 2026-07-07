@@ -26,7 +26,7 @@
             </a>
             <div class='flex flex-wrap gap-x-2 pt-1 text-sm text-slate-500 print:hidden'>
                 <div class='ring-offset-background focus-visible:ring-ring flex flex-col items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-slate-500 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:inline-flex print:hidden'>
-                    <a href="https://drive.google.com/file/d/1QVSQq1eNA03CTcw3C1AFiAIePjJgidVq/view?usp=sharing">
+                    <a href="https://drive.google.com/file/d/1ykB4pjpQHVrI5mB_AYStJrc6oCgxsEoi/view?usp=sharing">
                         <span tabindex="0" role="text">[Resume]</span>
                         <!---->
                     </a>
@@ -68,7 +68,7 @@
                         <div class="hidden text-xs tabular-nums text-slate-500 sm:block sm:text-nowrap sm:text-sm">2022 - 2026 (Expected)</div>
                     </div>
                 </div>
-                <div class="hover:none mt-2 text-sm text-xs text-slate-400">cGPA: 3.55</div>
+                <div class="hover:none mt-2 text-sm text-xs text-slate-400">cGPA: 3.59</div>
                 <div class="hover:none mt-2 text-sm text-xs text-slate-500">Bachelor's Degree in Computer Science</div>
                 <div class="hover:none flex items-center">
                     <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
@@ -176,12 +176,12 @@
                     <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Apr 2026 - Present</div>
                 </div>
                 <div class="hover:none mt-2 text-xs text-slate-400">
-                    Building a Market Intelligence dashboard with AI-generated insights, including statistical sampling design for audience overlap analysis and an automated video content analysis pipeline for trend breakdown. Developing industry-contextualized Jupyter Notebooks for the ParaTech AI/ML Academy, translating ML course materials into applied use cases (e.g. churn prediction, RFM segmentation) using live company data.
+                    Building a TikTok Market Intelligence dashboard with AI-generated insights, including statistical sampling design for audience overlap analysis and an automated video content analysis pipeline for trend breakdown.
                 </div>
                 <div class="hover:none flex items-center">
                     <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
                         <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                            Market Intelligence
+                            TikTok Intelligence
                         </div>
                         <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
                             LLM
@@ -197,9 +197,6 @@
                         </div>
                         <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
                             Machine Learning
-                        </div>
-                        <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                            Jupyter Notebooks
                         </div>
                     </div>
                 </div>

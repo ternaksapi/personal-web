@@ -17,7 +17,7 @@
     
     // Destructure the data with safe defaults
     const activities = data?.activities || [];
-    const stats = data?.stats || { totalRuns: 0, totalDistance: '0.0', longestRun: '0.0', year: new Date().getFullYear() };
+    const stats = data?.stats || { totalRuns: 0, totalDistance: '0.0', longestRun: '0.0', year: new Date().getFullYear(), bestEfforts: [] };
     const error = data?.error || null;
     
     // Pagination state
@@ -55,19 +55,29 @@
     
     // Track which maps are visible based on intersection observer
     let visibleMaps = {};
+    let mapObserver = null;
+    let setupMapObserver = () => {};
+
+    $: if (browser && currentPage !== undefined) {
+        tick().then(() => setupMapObserver());
+    }
     
     // Set up intersection observer to only render maps when they're near the viewport
     onMount(() => {
         if (!browser) return;
         
-        function setupObserver() {
+        setupMapObserver = function setupObserver() {
             // Wait for DOM to update
             tick().then(() => {
                 const mapContainers = document.querySelectorAll('.map-container');
                 
                 if (!mapContainers.length) return;
+
+                if (mapObserver) {
+                    mapObserver.disconnect();
+                }
                 
-                const observer = new IntersectionObserver((entries) => {
+                mapObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const id = entry.target.dataset.activityId;
                         if (entry.isIntersecting) {
@@ -83,18 +93,15 @@
                 
                 // Observe all map containers
                 mapContainers.forEach(container => {
-                    observer.observe(container);
+                    mapObserver.observe(container);
                 });
             });
-        }
+        };
         
         // Initial setup
-        setupObserver();
+        setupMapObserver();
         
-        // Setup observer again when page changes
-        $: if (currentPage !== undefined) {
-            tick().then(setupObserver);
-        }
+        return () => mapObserver?.disconnect();
     });
 </script>
 
@@ -102,7 +109,7 @@
     <title>Running</title>
 </svelte:head>
 
-<div class="transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10 sm:max-w-md md:max-w-lg lg:max-w-lg">
+<div class="runs-shell transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10 sm:max-w-md md:max-w-xl lg:max-w-2xl">
     <Header />
     
     <div class="flex h-full w-full max-w-lg flex-col items-start">
@@ -113,66 +120,77 @@
                 <p>{error}</p>
             </div>
         {:else}
-            <!-- Stats cards -->
-            <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                <div class="bg-slate-700 bg-opacity-50 p-4 rounded-md">
-                    <h3 class="text-sm text-slate-400 mb-1">Total Runs</h3>
-                    <p class="text-2xl font-bold text-slate-200">{stats.totalRuns}</p>
-                </div>
-                <div class="bg-slate-700 bg-opacity-50 p-4 rounded-md">
-                    <h3 class="text-sm text-slate-400 mb-1">Total Distance</h3>
-                    <p class="text-2xl font-bold text-slate-200">{stats.totalDistance} km</p>
-                </div>
-                <div class="bg-slate-700 bg-opacity-50 p-4 rounded-md">
-                    <h3 class="text-sm text-slate-400 mb-1">Longest Run</h3>
-                    <p class="text-2xl font-bold text-slate-200">{stats.longestRun} km</p>
-                </div>
-            </div>
+            <p class="run-year-summary">
+                This year, I've logged <strong>{stats.totalRuns}</strong> runs for <strong>{stats.totalDistance} km</strong>, with the longest one stretching <strong>{stats.longestRun} km</strong>.
+            </p>
+
+            {#if stats.bestEfforts?.length}
+                <section class="w-full mb-8">
+                    <div class="run-section-kicker">
+                        <p>Fastest equivalents</p>
+                        <span>Estimated from each run's average pace.</span>
+                    </div>
+
+                    <div class="run-effort-grid">
+                        {#each stats.bestEfforts as effort}
+                            <div class="run-effort-card">
+                                <span>{effort.label}</span>
+                                <strong>{effort.time}</strong>
+                                {#if effort.activityName}
+                                    <small>{effort.pace}/km · {effort.activityDate}</small>
+                                {:else}
+                                    <small>No eligible run yet</small>
+                                {/if}
+                            </div>
+                        {/each}
+                    </div>
+                </section>
+            {/if}
             
             <!-- Activity list with pagination -->
             <div class="w-full">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold">{stats?.year || new Date().getFullYear()} Activities</h2>
                     {#if totalPages > 1}
-                        <div class="text-sm text-slate-400">
+                        <div class="run-page-count text-sm">
                             Page {currentPage + 1} of {totalPages}
                         </div>
                     {/if}
                 </div>
                 
                 {#if activities.length === 0}
-                    <div class="bg-slate-700 bg-opacity-30 p-8 rounded-md text-center">
-                        <p class="text-slate-300">No running activities found for {stats?.year || new Date().getFullYear()}</p>
+                    <div class="run-empty-card p-8 text-center">
+                        <p>No running activities found for {stats?.year || new Date().getFullYear()}</p>
                     </div>
                 {:else}
                     <div class="space-y-6">
                         {#each paginatedActivities as activity, index (activity.id)}
-                            <div class="bg-slate-700 bg-opacity-30 p-4 rounded-md hover:bg-opacity-40 transition-all">
+                            <div class="run-activity-card">
                                 <div class="flex justify-between items-start">
-                                    <h3 class="font-semibold text-lg">{activity.name}</h3>
-                                    <span class="text-sm text-slate-400">{activity.date}</span>
+                                    <h3 class="run-activity-title">{activity.name}</h3>
+                                    <span class="run-activity-date">{activity.date}</span>
                                 </div>
                                 <div class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-y-2 gap-x-4">
                                     <div>
-                                        <span class="text-xs text-slate-400">Distance</span>
-                                        <p class="text-slate-200">{activity.distance} km</p>
+                                        <span class="run-metric-label">Distance</span>
+                                        <p class="run-metric-value">{activity.distance} km</p>
                                     </div>
                                     <div>
-                                        <span class="text-xs text-slate-400">Time</span>
-                                        <p class="text-slate-200">{activity.time}</p>
+                                        <span class="run-metric-label">Time</span>
+                                        <p class="run-metric-value">{activity.time}</p>
                                     </div>
                                     <div>
-                                        <span class="text-xs text-slate-400">Pace</span>
-                                        <p class="text-slate-200">{activity.pace} /km</p>
+                                        <span class="run-metric-label">Pace</span>
+                                        <p class="run-metric-value">{activity.pace} /km</p>
                                     </div>
                                     <div>
-                                        <span class="text-xs text-slate-400">Elevation</span>
-                                        <p class="text-slate-200">{activity.elevation} m</p>
+                                        <span class="run-metric-label">Elevation</span>
+                                        <p class="run-metric-value">{activity.elevation} m</p>
                                     </div>
                                 </div>
                                 
                                 <!-- Map section (always shown but loaded lazily) -->
-                                <div class="mt-3 map-container" data-activity-id={activity.id}>
+                                <div class="run-map-shell mt-3 map-container" data-activity-id={activity.id}>
                                     <RouteMap 
                                         polyline={activity.map} 
                                         startLat={activity.startLat}
@@ -301,11 +319,211 @@
 </div>
 
 <style>
-    /* Remove unused style */
-    /* .runs {
-        text-align: center;
+    .runs-shell {
+        --card: #ffffff;
+        --card-soft: #f8fafc;
+        --ink: #111827;
+        --muted: #64748b;
+        --line: #d6dce5;
+        --accent: #ff6b00;
+        --shadow: rgba(15, 23, 42, 0.14);
+        --gloss: rgba(255, 255, 255, 0.76);
+        --gloss-soft: rgba(255, 255, 255, 0.36);
+        --fade: rgba(15, 23, 42, 0.04);
+    }
+
+    :global([data-theme="dark"]) .runs-shell {
+        --card: #0b1220;
+        --card-soft: #111827;
+        --ink: #f8fafc;
+        --muted: #94a3b8;
+        --line: #334155;
+        --shadow: rgba(0, 0, 0, 0.46);
+        --gloss: rgba(255, 255, 255, 0.13);
+        --gloss-soft: rgba(255, 255, 255, 0.07);
+        --fade: rgba(0, 0, 0, 0.22);
+    }
+
+    .run-effort-card,
+    .run-activity-card,
+    .run-empty-card {
+        isolation: isolate;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 0.5rem;
+        background: linear-gradient(180deg, var(--card), var(--card-soft));
+        box-shadow: 0 16px 34px -28px var(--shadow);
+        color: var(--ink);
+    }
+
+    .run-effort-card::before,
+    .run-activity-card::before,
+    .run-empty-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        border-radius: inherit;
+        background:
+            radial-gradient(circle at 14% -8%, var(--gloss) 0, transparent 30%),
+            linear-gradient(120deg, var(--gloss-soft), transparent 38%),
+            linear-gradient(180deg, transparent 42%, var(--fade));
+        pointer-events: none;
+    }
+
+    .run-effort-card > *,
+    .run-activity-card > *,
+    .run-empty-card > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .run-year-summary {
+        max-width: 40rem;
+        margin: -0.65rem 0 1.65rem;
+        color: var(--muted) !important;
+        font-size: 1rem;
+        line-height: 1.58;
+    }
+
+    .run-year-summary strong {
+        color: var(--ink) !important;
+        font-weight: 700;
+    }
+
+    .run-section-kicker {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.65rem;
+    }
+
+    .run-section-kicker p {
+        margin: 0;
+        color: var(--accent) !important;
+        font-size: 0.78rem;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .run-section-kicker span {
+        color: var(--muted) !important;
+        font-size: 0.78rem;
+        text-align: right;
+    }
+
+    .run-effort-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.65rem;
+    }
+
+    .run-effort-card {
+        padding: 0.78rem 0.85rem;
+    }
+
+    .run-effort-card span,
+    .run-effort-card strong,
+    .run-effort-card small {
         display: block;
-        margin: 20px auto;
-    } */
+    }
+
+    .run-effort-card span {
+        color: var(--accent) !important;
+        font-size: 0.72rem;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+
+    .run-effort-card strong {
+        margin-top: 0.5rem;
+        color: var(--ink) !important;
+        font-size: 1.18rem;
+        line-height: 1.05;
+    }
+
+    .run-effort-card small {
+        margin-top: 0.45rem;
+        color: var(--muted) !important;
+        font-size: 0.68rem;
+        line-height: 1.25;
+    }
+
+    .run-page-count,
+    .run-activity-date,
+    .run-empty-card p {
+        color: var(--muted) !important;
+    }
+
+    .run-activity-card {
+        padding: 1rem;
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .run-activity-card:hover {
+        border-color: rgba(255, 107, 0, 0.48);
+        box-shadow: 0 26px 50px -30px var(--shadow);
+        transform: translateY(-2px);
+    }
+
+    .run-activity-title {
+        margin: 0;
+        color: var(--ink) !important;
+        font-size: 1.125rem;
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
+    .run-activity-date {
+        flex: 0 0 auto;
+        margin-left: 1rem;
+        font-size: 0.875rem;
+    }
+
+    .run-metric-label,
+    .run-metric-value {
+        display: block;
+    }
+
+    .run-metric-label {
+        color: var(--muted) !important;
+        font-size: 0.75rem;
+        line-height: 1.35;
+    }
+
+    .run-metric-value {
+        margin: 0;
+        color: var(--ink) !important;
+        line-height: 1.35;
+    }
+
+    .run-map-shell {
+        border-radius: 0.42rem;
+        overflow: hidden;
+        border: 1px solid color-mix(in srgb, var(--line) 74%, transparent);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .run-empty-card p {
+        margin: 0;
+    }
+
+    @media (max-width: 640px) {
+        .run-effort-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .run-section-kicker {
+            display: block;
+        }
+
+        .run-section-kicker span {
+            display: block;
+            margin-top: 0.35rem;
+            text-align: left;
+        }
+    }
 </style>
 

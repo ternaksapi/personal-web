@@ -3,20 +3,28 @@ import { STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET, STRAVA_REFRESH_TOKEN } from '$e
 
 // Function to get a fresh access token using the refresh token
 async function getAccessToken() {
+    const body = new URLSearchParams({
+        client_id: STRAVA_CLIENT_ID,
+        client_secret: STRAVA_CLIENT_SECRET,
+        refresh_token: STRAVA_REFRESH_TOKEN,
+        grant_type: 'refresh_token'
+    });
+
     const response = await fetch('https://www.strava.com/oauth/token', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({
-            client_id: STRAVA_CLIENT_ID,
-            client_secret: STRAVA_CLIENT_SECRET,
-            refresh_token: STRAVA_REFRESH_TOKEN,
-            grant_type: 'refresh_token'
-        })
+        body
     });
 
     const data = await response.json();
+
+    if (!response.ok || !data.access_token) {
+        const details = data.message || data.error || `HTTP ${response.status}`;
+        throw new Error(`Strava token refresh failed: ${details}`);
+    }
+
     return data.access_token;
 }
 
@@ -49,7 +57,7 @@ async function getCurrentYearRuns(accessToken) {
         if (!response.ok) {
             const errorText = await response.text();
             console.error(`Strava API error: ${response.status} ${errorText}`);
-            throw new Error(`Strava API error: ${response.status}`);
+            throw new Error(formatStravaError(response.status, errorText));
         }
         
         const activities = await response.json();
@@ -131,6 +139,7 @@ export async function GET() {
         const longestRun = currentYearRuns.length > 0 
             ? Math.max(...currentYearRuns.map(run => run.distance / 1000)) 
             : 0;
+        const bestEfforts = buildBestEfforts(currentYearRuns);
         
         const currentYear = new Date().getFullYear();
         
@@ -140,7 +149,8 @@ export async function GET() {
                 totalRuns: currentYearRuns.length,
                 totalDistance: totalDistance.toFixed(1),
                 longestRun: longestRun.toFixed(1),
-                year: currentYear
+                year: currentYear,
+                bestEfforts
             }
         });
     } catch (error) {
@@ -153,9 +163,10 @@ export async function GET() {
                 totalRuns: 0,
                 totalDistance: '0.0',
                 longestRun: '0.0',
-                year: new Date().getFullYear()
+                year: new Date().getFullYear(),
+                bestEfforts: []
             }
-        }, { status: 500 });
+        });
     }
 }
 
@@ -181,4 +192,62 @@ function formatPace(seconds, meters) {
     const secs = Math.floor(paceInSeconds % 60);
     
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
+}
+
+function buildBestEfforts(runs) {
+    const targets = [
+        { label: '1K', meters: 1000 },
+        { label: '5K', meters: 5000 },
+        { label: '10K', meters: 10000 },
+        { label: '15K', meters: 15000 }
+    ];
+
+    return targets.map(target => {
+        const candidates = runs
+            .filter(run => run.distance >= target.meters * 0.995 && run.moving_time > 0)
+            .map(run => {
+                const seconds = Math.round(run.moving_time * (target.meters / run.distance));
+
+                return {
+                    label: target.label,
+                    meters: target.meters,
+                    seconds,
+                    time: formatTime(seconds),
+                    pace: formatPace(seconds, target.meters),
+                    activityName: run.name || 'Unnamed Activity',
+                    activityDate: new Date(run.start_date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                    })
+                };
+            })
+            .sort((a, b) => a.seconds - b.seconds);
+
+        return candidates[0] || {
+            label: target.label,
+            meters: target.meters,
+            seconds: null,
+            time: '—',
+            pace: '',
+            activityName: '',
+            activityDate: ''
+        };
+    });
+}
+
+function formatStravaError(status, errorText) {
+    try {
+        const parsed = JSON.parse(errorText);
+        const details = Array.isArray(parsed.errors)
+            ? parsed.errors
+                .map(error => [error.resource, error.field, error.code].filter(Boolean).join(' '))
+                .filter(Boolean)
+                .join('; ')
+            : '';
+        const message = [parsed.message, details].filter(Boolean).join(': ');
+
+        return `Strava API error ${status}${message ? `: ${message}` : ''}`;
+    } catch {
+        return `Strava API error ${status}`;
+    }
 }

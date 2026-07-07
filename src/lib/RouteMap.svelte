@@ -1,22 +1,26 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
     import { browser } from '$app/environment';
+    import { env } from '$env/dynamic/public';
     
     export let polyline = null;
     export let startLat = null;
     export let startLng = null;
     export let id = '';
     
-    // Replace with your Mapbox access token
-    const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiaGFpa2FsbGwiLCJhIjoiY21hYmZyMjB3MmIwejJ3c2R4dnRvNmYxYiJ9.uI-yZ7Sgrb5WxtVNp14KdA';
+    const MAPBOX_ACCESS_TOKEN = env.PUBLIC_MAPBOX_ACCESS_TOKEN || '';
     
     let map;
     let mapContainer;
     let mapboxgl;
     let mapLoaded = false;
+
+    $: routeCoordinates = decodePolyline(polyline);
+    $: routeShape = getRouteShape(routeCoordinates);
+    $: routeFrameHeight = frameHeightFor(routeShape);
     
     onMount(async () => {
-        if (!browser || !polyline) return;
+        if (!browser || !polyline || !MAPBOX_ACCESS_TOKEN) return;
         
         try {
             // Dynamically import mapbox-gl
@@ -51,7 +55,7 @@
         
         try {
             // First decode the polyline to get coordinates
-            const coordinates = decodePolyline(polyline);
+            const coordinates = routeCoordinates;
             
             // Pre-calculate bounds to use for initial positioning
             let initialBounds = null;
@@ -68,16 +72,16 @@
                 style: 'mapbox://styles/mapbox/dark-v11',
                 interactive: false,
                 attributionControl: false,
-                minZoom: 12 // Enforce a minimum zoom level
+                minZoom: 9
             };
             
             // If we have route coordinates, set initial bounds
             if (initialBounds) {
                 mapOptions.bounds = initialBounds;
                 mapOptions.fitBoundsOptions = {
-                    padding: 25, // Reduced from 30 for tighter fit
-                    maxZoom: 16, // Limit how far it can zoom in
-                    duration: 0 // Disable animation
+                    padding: fitPadding(routeShape),
+                    maxZoom: 16,
+                    duration: 0
                 };
             } else if (startLat && startLng) {
                 // Otherwise use start point with a closer zoom
@@ -160,9 +164,9 @@
                             map.setZoom(15); // Set a fixed zoom level
                         } else {
                             // Fit to the route bounds with adjusted padding
-                            const padding = (totalDistance < 2) ? 100 : 30; // More padding for longer routes
-                            map.fitBounds(routePolyline.getBounds(), {
-                                padding: padding,
+                            map.fitBounds(initialBounds, {
+                                padding: fitPadding(routeShape, totalDistance),
+                                maxZoom: 16,
                                 duration: 0
                             });
                         }
@@ -228,6 +232,62 @@
             [minLng - padding, minLat - padding], // Southwest corner
             [maxLng + padding, maxLat + padding]  // Northeast corner
         ];
+    }
+
+    function getRouteShape(coordinates) {
+        if (!coordinates || coordinates.length === 0) {
+            return {
+                latitudeKm: 0,
+                longitudeKm: 0,
+                ratio: 1
+            };
+        }
+
+        let minLat = Infinity;
+        let maxLat = -Infinity;
+        let minLng = Infinity;
+        let maxLng = -Infinity;
+        let latSum = 0;
+
+        coordinates.forEach(([lat, lng]) => {
+            minLat = Math.min(minLat, lat);
+            maxLat = Math.max(maxLat, lat);
+            minLng = Math.min(minLng, lng);
+            maxLng = Math.max(maxLng, lng);
+            latSum += lat;
+        });
+
+        const averageLat = latSum / coordinates.length;
+        const latitudeKm = Math.max((maxLat - minLat) * 111.32, 0.01);
+        const longitudeKm = Math.max((maxLng - minLng) * 111.32 * Math.cos(averageLat * Math.PI / 180), 0.01);
+
+        return {
+            latitudeKm,
+            longitudeKm,
+            ratio: latitudeKm / longitudeKm
+        };
+    }
+
+    function frameHeightFor(shape) {
+        if (!shape) return '13.5rem';
+
+        if (shape.ratio >= 2.4) return '22rem';
+        if (shape.ratio >= 1.45) return '18rem';
+        if (shape.latitudeKm >= 7) return '16rem';
+
+        return '13.5rem';
+    }
+
+    function fitPadding(shape, distance = 0) {
+        if (shape?.ratio >= 1.45) {
+            return { top: 42, bottom: 42, left: 34, right: 34 };
+        }
+
+        if (distance > 8) {
+            return { top: 32, bottom: 32, left: 38, right: 38 };
+        }
+
+        return 30;
     }
     
     // Decode polyline function
@@ -310,7 +370,7 @@
 </script>
 
 {#if browser}
-<div class="relative h-[200px] w-full rounded-md overflow-hidden">
+<div class="route-map-frame relative w-full rounded-md overflow-hidden" data-route-id={id} style={`height: ${routeFrameHeight};`}>
     <!-- Loading placeholder shown until map is ready -->
     {#if !mapLoaded}
     <div class="absolute inset-0 z-10 flex items-center justify-center bg-slate-700 bg-opacity-70">
@@ -333,7 +393,7 @@
 </div>
 {:else}
 <!-- Placeholder for server-side rendering -->
-<div class="route-map h-[200px] w-full rounded-md overflow-hidden bg-slate-700 bg-opacity-30">
+<div class="route-map route-map-frame w-full rounded-md overflow-hidden bg-slate-700 bg-opacity-30" data-route-id={id} style={`height: ${routeFrameHeight};`}>
     <div class="flex h-full w-full items-center justify-center">
         <p class="text-sm text-slate-400">Loading map...</p>
     </div>

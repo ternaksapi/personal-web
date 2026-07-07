@@ -6,7 +6,11 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"spotify:auth-url": "node scripts/spotify-auth-url.mjs",
+		"spotify:exchange": "node scripts/spotify-exchange-code.mjs",
+		"spotify:sync": "node scripts/sync-spotify.mjs",
+		"listens:sync": "node scripts/sync-spotify.mjs"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",
