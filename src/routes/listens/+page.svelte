@@ -5,11 +5,12 @@
 
     let stats = data.stats || null;
     let albumWalls = data.albumWalls || {};
-    let wallMode = 'currentMonth';
+    let wallMode = 'yearToDate';
     let activeId = null;
     let wallOptions = [];
     let activeWall = null;
     let albums = [];
+    let hasPinnedSelection = false;
 
     $: wallOptions = [
         {
@@ -35,12 +36,17 @@
     }
     $: activeAlbum = albums.find((album) => album.albumId === activeId) || albums[0] || null;
 
-    function selectAlbum(album) {
+    function selectAlbum(album, pinned = false) {
         activeId = album.albumId;
+
+        if (pinned) {
+            hasPinnedSelection = true;
+        }
     }
 
     function setWallMode(key) {
         wallMode = key;
+        hasPinnedSelection = false;
     }
 
     function artistsFor(album) {
@@ -224,14 +230,20 @@
                 {/if}
             </aside>
 
-            <div class="album-wall">
+            <div class="album-wall" class:pinned-selection={hasPinnedSelection}>
                 {#each albums as album (album.albumId)}
                     <figure
                         class:active-tile={album.albumId === activeId}
                         on:mouseenter={() => selectAlbum(album)}
                         on:focusin={() => selectAlbum(album)}
                     >
-                        <a href={albumHref(album)} target="_blank" rel="noopener noreferrer">
+                        <button
+                            class="album-tile"
+                            type="button"
+                            aria-label={`Show ${album.albumName} by ${artistsFor(album)}`}
+                            aria-pressed={album.albumId === activeId}
+                            on:click={() => selectAlbum(album, true)}
+                        >
                             <img
                                 src={album.imageUrl}
                                 alt={`${album.albumName} by ${artistsFor(album)}`}
@@ -239,7 +251,7 @@
                                 width={album.imageWidth || 300}
                                 height={album.imageHeight || 300}
                             />
-                        </a>
+                        </button>
                         <figcaption>
                             <span>{album.albumName}</span>
                             <span>{artistsFor(album)}</span>
@@ -609,28 +621,24 @@
         transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .album-wall:has(figure:hover) figure:not(:hover),
-    .album-wall:has(figure:focus-within) figure:not(:focus-within) {
-        opacity: 0.42;
-    }
-
-    figure:hover,
-    figure:focus-within,
     figure.active-tile {
         z-index: 4;
         border-color: var(--accent);
         box-shadow: 0 20px 38px -28px var(--shadow);
-        transform: translateY(-2px) scale(1.04);
     }
 
-    figure a {
+    .album-tile {
         display: block;
         width: 100%;
         height: 100%;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        padding: 0;
         outline: none;
     }
 
-    figure a:focus-visible {
+    .album-tile:focus-visible {
         box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.28);
     }
 
@@ -638,7 +646,7 @@
         display: block;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         background: #111827;
     }
 
@@ -729,9 +737,26 @@
         }
 
         .selected-album {
-            position: relative;
-            top: auto;
+            position: sticky;
+            top: max(0.65rem, env(safe-area-inset-top));
+            z-index: 12;
             margin-bottom: 1rem;
+            max-height: min(52vh, 26rem);
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .selected-album h2 {
+            font-size: 1.2rem;
+        }
+
+        .selected-album p {
+            margin-block: 0.55rem 0.8rem;
+        }
+
+        .selected-track-list {
+            margin: 0.75rem 0;
+            padding: 0.65rem 0;
         }
 
         .album-wall {
@@ -742,6 +767,23 @@
     @media (hover: none) {
         figcaption {
             display: none !important;
+        }
+
+        .album-wall.pinned-selection figure:not(.active-tile) {
+            opacity: 0.42;
+        }
+    }
+
+    @media (hover: hover) {
+        .album-wall:has(figure:hover) figure:not(:hover),
+        .album-wall:has(figure:focus-within) figure:not(:focus-within) {
+            opacity: 0.42;
+        }
+
+        figure:hover,
+        figure:focus-within,
+        figure.active-tile {
+            transform: translateY(-2px) scale(1.04);
         }
     }
 </style>

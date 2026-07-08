@@ -4,8 +4,8 @@
 </script>
 
 
-<div class="flex flex-wrap items-center justify-between w-full">
-    <div class="flex flex-wrap gap-x-1">
+<div class="site-header">
+    <nav class="nav-strip" aria-label="Primary navigation">
         <a href="/" class="nav-link transition-all duration-150 {$page.url.pathname === '/' ? 'active' : ''}">
             <span tabindex="0" role="text"> [kalkalkal.xyz] </span>
         </a>
@@ -29,12 +29,27 @@
         <a href="/writes" class="nav-link transition-all duration-150 {$page.url.pathname === '/writes' ? 'active' : ''}">
             <span tabindex="0" role="text"> [writes] </span>
         </a>
-    </div>
+    </nav>
     
     <ThemeToggle />
 </div>
 
 <style>
+    .site-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .nav-strip {
+        display: flex;
+        flex-wrap: wrap;
+        column-gap: 0.25rem;
+        min-width: 0;
+    }
+
     /* Dark theme navigation styles */
     :global([data-theme="dark"]) .nav-link {
         color: #ffffff;
@@ -71,5 +86,31 @@
     
     :global([data-theme="light"]) .nav-separator {
         color: #000000;
+    }
+
+    @media (max-width: 640px) {
+        .site-header {
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-strip {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overscroll-behavior-x: contain;
+            padding-block: 0.2rem;
+            white-space: nowrap;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-strip::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-link,
+        .nav-separator {
+            flex: 0 0 auto;
+        }
     }
 </style>
