@@ -1,0 +1,4 @@
+project_id = "website"
+
+[functions.sync-listens]
+verify_jwt = true

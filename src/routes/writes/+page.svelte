@@ -41,7 +41,7 @@
 </script>
 
 <svelte:head>
-    <title>Writes | Yusuf Haikal</title>
+    <title>writes</title>
     <meta name="description" content="Articles and thoughts by Muhammad Yusuf Haikal on technology, AI, and software development." />
 </svelte:head>
 

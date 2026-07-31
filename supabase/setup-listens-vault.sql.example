@@ -1,0 +1,14 @@
+-- Run this once in the Supabase SQL Editor after replacing both placeholders.
+-- Vault encrypts these values at rest. Do not put real credentials in this file.
+
+select vault.create_secret(
+    'https://YOUR_PROJECT_REF.supabase.co',
+    'listens_project_url',
+    'Base URL used by the scheduled listens sync'
+);
+
+select vault.create_secret(
+    'YOUR_SUPABASE_SERVICE_ROLE_KEY',
+    'listens_service_role_key',
+    'Service key used only by pg_cron to invoke the protected Edge Function'
+);

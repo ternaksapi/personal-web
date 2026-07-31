@@ -106,7 +106,7 @@
 </script>
 
 <svelte:head>
-    <title>Running</title>
+    <title>runs</title>
 </svelte:head>
 
 <div class="runs-shell transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10 sm:max-w-md md:max-w-xl lg:max-w-2xl">
@@ -301,7 +301,8 @@
                     <div class="mt-6 w-full text-center">
                         <a 
                             href={`https://www.strava.com/athletes/${activities[0]?.athleteId}`}
-                            target="_blank" 
+                            target="_blank"
+                            rel="noopener noreferrer"
                             class="inline-flex items-center justify-center text-sm text-slate-400 hover:text-slate-200 transition-colors"
                         >
                             <span>View more on Strava</span>

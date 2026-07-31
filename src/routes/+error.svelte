@@ -12,7 +12,7 @@
             href="/" 
             class="mt-4 text-[#decff1] hover:bg-white hover:text-[#000758] transition-all duration-150"
         >
-            <span tabindex="0" role="text">[Go back home]</span>
+            [Go back home]
         </a>
     </div>
-</div> 
+</div>

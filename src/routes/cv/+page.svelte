@@ -1,5 +1,5 @@
 <svelte:head>
-    <title>Works</title>
+    <title>works</title>
 </svelte:head>
 
 <script>
@@ -13,39 +13,39 @@
     <section class="flex w-full max-w-lg flex-col items-start justify-between gap-x-10 gap-y-8 sm:flex-row print:flex-row">
         <div class="space-y-4 flex-1">
             <h1 class="text-2xl font-bold">
-                <span tabindex="0" role="text">Muhammad Yusuf Haikal</span>
+                Muhammad Yusuf Haikal
             </h1>
             <!---->
             <p class="max-w-md text-sm text-slate-300">
-                <span tabindex="0" role="text">Computer Science Student</span>
+                Computer Science Student
             </p>
             <!---->
-            <a class="align-baseline text-xs leading-none text-slate-500 transition-colors hover:text-slate-200" target="_blank" href="https://maps.app.goo.gl/LHsbFfPdi8RG8uWw5">
-                <span tabindex="0" role="text">Depok, Indonesia</span>
+            <a class="align-baseline text-xs leading-none text-slate-500 transition-colors hover:text-slate-200" target="_blank" rel="noopener noreferrer" href="https://maps.app.goo.gl/LHsbFfPdi8RG8uWw5">
+                Depok, Indonesia
                 <!---->
             </a>
             <div class='flex flex-wrap gap-x-2 pt-1 text-sm text-slate-500 print:hidden'>
                 <div class='ring-offset-background focus-visible:ring-ring flex flex-col items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-slate-500 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:inline-flex print:hidden'>
                     <a href="https://drive.google.com/file/d/1ykB4pjpQHVrI5mB_AYStJrc6oCgxsEoi/view?usp=sharing">
-                        <span tabindex="0" role="text">[Resume]</span>
+                        [Resume]
                         <!---->
                     </a>
                 </div>
                 <div class=' ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'>
                     <a href="mailto:yusufhaikaln7@gmail.com">
-                        <span tabindex="0" role="text">[Email]</span>
+                        [Email]
                         <!---->
                     </a>
                 </div>
                 <div class='ring-offset-background focus-visible:ring-ring flex flex-col items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-slate-500 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:inline-flex print:hidden'>
                     <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/">
-                        <span tabindex="0" role="text">[LinkedIn]</span>
+                        [LinkedIn]
                         <!---->
                     </a>
                 </div>
                 <div class='ring-offset-background focus-visible:ring-ring flex flex-col items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-slate-500 transition-colors hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 sm:inline-flex print:hidden'>
                     <a href="https://github.com/ternaksapi">
-                        <span tabindex="0" role="text">[GitHub]</span>
+                        [GitHub]
                         <!---->
                     </a>
                 </div>
@@ -65,11 +65,14 @@
                 <div class="flex flex-col space-y-2">
                     <div class="flex items-center justify-between gap-x-2 text-slate-400">
                         <h3 class="text-lg font-semibold sm:text-lg">Universitas Indonesia</h3>
-                        <div class="hidden text-xs tabular-nums text-slate-500 sm:block sm:text-nowrap sm:text-sm">2022 - 2026 (Expected)</div>
+                        <div class="hidden text-xs tabular-nums text-slate-500 sm:block sm:text-nowrap sm:text-sm">2022 - 2026</div>
                     </div>
                 </div>
                 <div class="hover:none mt-2 text-sm text-xs text-slate-400">cGPA: 3.59</div>
                 <div class="hover:none mt-2 text-sm text-xs text-slate-500">Bachelor's Degree in Computer Science</div>
+                <div class="hover:none mt-2 text-sm text-xs text-slate-500">
+                    Undergraduate Thesis: Development of an Artificial Intelligence (AI) Metacognitive Coach Chatbot Feature for the K-Owl Learning Platform
+                </div>
                 <div class="hover:none flex items-center">
                     <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
                         <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
@@ -170,13 +173,13 @@
                 </div>
                 <div class="flex items-start justify-between gap-x-2 gap-y-2 text-slate-400">
                     <div class="flex flex-col">
-                        <h4 class="text-sm leading-none">Data Scientist Intern, CEO Office</h4>
+                        <h4 class="text-sm leading-none">Data Scientist Intern</h4>
                         <p class="text-xs text-slate-500 mt-1">South Jakarta, Indonesia</p>
                     </div>
-                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Apr 2026 - Present</div>
+                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Apr 2026 - Jul 2026</div>
                 </div>
                 <div class="hover:none mt-2 text-xs text-slate-400">
-                    Building a TikTok Market Intelligence dashboard with AI-generated insights, including statistical sampling design for audience overlap analysis and an automated video content analysis pipeline for trend breakdown.
+                    Built and deployed an AI market-intelligence pipeline that transforms TikTok beauty and personal-care videos into structured trend, product, commerce, and content-strategy signals. Also developed a human-in-the-loop keyword canonicalization system using embeddings, clustering, and reviewable decisions to clean noisy vocabularies while preserving emerging trends.
                 </div>
                 <div class="hover:none flex items-center">
                     <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
@@ -184,20 +187,46 @@
                             TikTok Intelligence
                         </div>
                         <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                            LLM
+                            Vertex AI
                         </div>
                         <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                            Video Analytics
+                            Multimodal LLM
                         </div>
                         <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                            Data Science
+                            Data Pipelines
                         </div>
                         <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                            Statistical Sampling
+                            Embeddings
                         </div>
                         <div class="focus:ring-ring inline-flex items-center text-nowrap rounded-md border border-transparent bg-slate-700 bg-opacity-50 px-2 py-0.5 align-middle text-xs font-semibold text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
-                            Machine Learning
+                            Human-in-the-Loop
                         </div>
+                    </div>
+                </div>
+                <div class="relative h-[200px] mt-4 mb-2 w-full">
+                    <div class="absolute left-0 top-[10px]">
+                        <Polaroid
+                            src="/paragon1.jpeg"
+                            alt="Haikal at the ParagonCorp office"
+                            rotation={-8}
+                            size="140px"
+                        />
+                    </div>
+                    <div class="absolute left-1/2 -translate-x-1/2 top-[25px]">
+                        <Polaroid
+                            src="/paragon2.jpeg"
+                            alt="Haikal with fellow Paragon Technology and Innovation interns"
+                            rotation={5}
+                            size="140px"
+                        />
+                    </div>
+                    <div class="absolute right-0 top-0">
+                        <Polaroid
+                            src="/paragon3.jpeg"
+                            alt="Paragon Technology and Innovation internship team"
+                            rotation={-3}
+                            size="140px"
+                        />
                     </div>
                 </div>
             </div>
@@ -476,7 +505,7 @@
             <ProjectCard 
                 title="AI Report Generator"
                 description="Developed a Next.js-based AI report generator for Klinik Pintar, utilizing RAG with PostgreSQL, pgvector, and Google text embeddings to enable business analysts to create schema-driven reports."
-                href="ristek.link/aireport"
+                href="https://ristek.link/aireport"
                 previewImage="/kp.png"
             />
             <ProjectCard 
@@ -495,11 +524,3 @@
     </section>
 </article>
 </div>
-
-<style>
-    .about {
-        text-align: center;
-        display: block;
-        margin: 20px auto;
-    }
-</style>

@@ -21,9 +21,6 @@
             typingSpeed = 150;
         }
 
-        let element = document.getElementById('typing-text');
-        if (element) element.textContent = currentText;
-
         if (!isDeleting && currentText === currentGreeting) {
             typingSpeed = 2000; // Pause at end
             isDeleting = true;
@@ -41,6 +38,12 @@
         currentIndex = 0;
         currentText = '';
         isDeleting = false;
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            currentText = greetings[0];
+            return;
+        }
+
         typeText();
     });
 
@@ -52,54 +55,46 @@
     });
 </script>
 <svelte:head>
-    <title>Muhammad Yusuf Haikal</title>
+    <title>kalkalkal.xyz</title>
 </svelte:head>
 <div class="transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10  sm:max-w-md md:max-w-lg lg:max-w-lg ">
     <Header />
     <div class="flex h-full w-full max-w-lg flex-col items-start">
-        <ul class="flex flex-col space-y-5">
-            <h1 class="text-3xl font-bold"><span tabindex="0" role="text">Muhammad Yusuf Haikal</span>
-            <!---->
-            </h1>
-            <a class="w-fit text-slate-300" href="mailto:yusufhaikaln7@gmail.com"><span tabindex="0" role="text">yusufhaikaln7@gmail.com</span>
-            <!---->
-            </a>
-            <h3 class="text-slate-500"><span tabindex="0" role="text">Depok, Indonesia</span>
-            <!---->
-            </h3>
+        <div class="flex flex-col space-y-5">
+            <h1 class="text-3xl font-bold">Muhammad Yusuf Haikal</h1>
+            <a class="w-fit text-slate-300" href="mailto:yusufhaikaln7@gmail.com">yusufhaikaln7@gmail.com</a>
+            <p class="text-slate-500">Depok, Indonesia</p>
             <div class="flex h-full w-full max-w lg flex-col items-start space-y-4">
                 <Polaroid 
-                    src="/front.jpg" 
-                    alt="Muhammad Yusuf Haikal" 
-                    caption="that's me!" 
+                    src="/new_front.jpeg"
+                    alt="Muhammad Yusuf Haikal in graduation attire"
+                    caption="(un)officially graduated!"
                     rotation={-3}
+                    zoom={1.18}
                 />
-                <div id="typing-container" class="text-xl greeting-text mt-4">
-                    <span id="typing-text"></span>
+                <div id="typing-container" class="text-xl greeting-text mt-4" aria-hidden="true">
+                    <span id="typing-text">{currentText}</span>
                     <span class="cursor">|</span>
                 </div>
-                <li>I'm Haikal, a Final-Year CS student at UI, currently helping drive data-informed decisions @ ParagonCorp.</li>
-                <li>I build AI and data products. Driven by <a href="https://www.cs.ox.ac.uk/activities/ieg/e-library/sources/t_article.pdf" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-70">Turing's question</a> and the suspicion that intelligent systems can help people make genuinely better decisions.</li>
-                <li>Reach me through my <a href="mailto:yusufhaikal7@gmail.com" class="underline hover:opacity-70">email</a> or on <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/" class="underline hover:opacity-70">LinkedIn</a>.</li>
+                <p>I'm Haikal, a Computer Science graduate from currently doing AI related things @ Shopee under SPX Express.</p>
+                <p>I build AI and data products. Driven by <a href="https://www.cs.ox.ac.uk/activities/ieg/e-library/sources/t_article.pdf" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-70">Turing's question</a> and the suspicion that intelligent systems can help people make genuinely better decisions.</p>
+                <p>Reach me through my <a href="mailto:yusufhaikaln7@gmail.com" class="underline hover:opacity-70">email</a> or on <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/" class="underline hover:opacity-70">LinkedIn</a>.</p>
             </div>
-            <div class="flex h-full flex-wrap items-end justify-end space-x-1">
-                <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/">
-                    <img class="max-w-[20px] icon" src="/linkedin.png" alt="linkedin.png">
+            <div class="flex h-full flex-wrap items-end justify-end gap-3">
+                <a class="inline-flex" href="https://www.linkedin.com/in/muhammad-yusuf-haikal/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+                    <img class="max-w-[20px] icon" src="/linkedin.png" alt="">
                 </a>
-                <p class="inline sm:invisible sm:block sm:pr-0">_</p>
-                <a href="https://github.com/ternaksapi">
-                    <img class="max-w-[20px] icon" src="/github.png" alt="github.png">
+                <a class="inline-flex" href="https://github.com/ternaksapi" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
+                    <img class="max-w-[20px] icon" src="/github.png" alt="">
                 </a>
-                <p class="inline sm:invisible sm:block sm:pr-0">_</p>
-                <a href="https://medium.com/@yusufhaikall">
-                    <img class="max-w-[20px] icon" src="/medium.png" alt="medium.png">
+                <a class="inline-flex" href="https://medium.com/@yusufhaikall" target="_blank" rel="noopener noreferrer" aria-label="Medium profile">
+                    <img class="max-w-[20px] icon" src="/medium.png" alt="">
                 </a>
-                <p class="inline sm:invisible sm:block sm:pr-0">_</p>
-                <a href="https://www.instagram.com/ysfhaikal/">
-                    <img class="max-w-[20px] icon" src="/instagram.png" alt="instagram.png">
+                <a class="inline-flex" href="https://www.instagram.com/ysfhaikal/" target="_blank" rel="noopener noreferrer" aria-label="Instagram profile">
+                    <img class="max-w-[20px] icon" src="/instagram.png" alt="">
                 </a>
             </div>
-        </ul>
+        </div>
     </div>
 </div>
 <style>

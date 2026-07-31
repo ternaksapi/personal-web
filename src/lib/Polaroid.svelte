@@ -4,6 +4,8 @@
     export let caption = '';
     export let rotation = 0; // degrees to rotate (-15 to 15 works well)
     export let size = '150px'; // default size for the image
+    export let zoom = 1;
+    export let position = 'center';
 </script>
 
 <div 
@@ -11,13 +13,15 @@
     style="transform: rotate({rotation}deg); width: calc({size} + 1rem);"
 >
     <div class="polaroid-frame">
-        <img 
-            {src} 
-            {alt} 
-            loading="lazy" 
-            class="polaroid-image"
-            style="width: {size}; height: {size};"
-        />
+        <div class="polaroid-image-viewport" style="width: {size}; height: {size};">
+            <img
+                {src}
+                {alt}
+                loading="lazy"
+                class="polaroid-image"
+                style="transform: scale({zoom}); object-position: {position};"
+            />
+        </div>
         {#if caption}
             <span class="polaroid-caption">{caption}</span>
         {/if}
@@ -87,11 +91,16 @@
     }
 
     .polaroid-image {
-        aspect-ratio: 1 / 1;
         width: 100%;
-        height: auto;
+        height: 100%;
         object-fit: cover;
         filter: none !important;
+        transition: transform 0.3s ease;
+    }
+
+    .polaroid-image-viewport {
+        flex-shrink: 0;
+        overflow: hidden;
     }
 
     .polaroid-caption {

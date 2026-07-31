@@ -5,6 +5,12 @@
 
     let stats = data.stats || null;
     let albumWalls = data.albumWalls || {};
+    const albumIndex = data.albumIndex || {};
+    const hydrateWall = (entries) => Array.isArray(entries)
+        ? entries.map((entry) => ({ ...albumIndex[entry.albumId], ...entry }))
+        : [];
+    const currentMonthAlbums = hydrateWall(albumWalls.currentMonth);
+    const yearToDateAlbums = hydrateWall(albumWalls.yearToDate);
     let wallMode = 'yearToDate';
     let activeId = null;
     let wallOptions = [];
@@ -16,13 +22,13 @@
         {
             key: 'currentMonth',
             label: stats?.periodLabel || 'This month',
-            albums: Array.isArray(albumWalls.currentMonth) ? albumWalls.currentMonth : data.albums || [],
+            albums: currentMonthAlbums,
             stats
         },
         {
             key: 'yearToDate',
             label: stats?.year?.periodLabel || 'Year to date',
-            albums: Array.isArray(albumWalls.yearToDate) ? albumWalls.yearToDate : [],
+            albums: yearToDateAlbums,
             stats: stats?.year || null
         }
     ].filter((option) => option.albums.length > 0);
@@ -80,7 +86,7 @@
             return 'A recent snapshot of what has been in rotation.';
         }
 
-        return `${stats.year.periodLabel}, Last.fm logged ${formatNumber(stats.year.scrobbles)} scrobbles across ${formatNumber(stats.year.tracks)} tracks and ${formatNumber(stats.year.artists)} artists. The wall switches between this month and the year-to-date album stack.`;
+        return `${stats.year.periodLabel}, Last.fm logged ${formatNumber(stats.year.scrobbles)} scrobbles across ${formatNumber(stats.year.tracks)} unique tracks and ${formatNumber(stats.year.artists)} unique artists. The wall switches between this month and the year-to-date album stack.`;
     }
 
     function formatNumber(value) {
@@ -114,12 +120,17 @@
     function wallDescription(wall) {
         if (!wall?.stats) return 'Albums ranked from the listening snapshot.';
 
-        return `${formatNumber(wall.stats.albums)} albums ranked by scrobbles.`;
+        const shown = wall.albums?.length || 0;
+        const total = wall.stats.albums || shown;
+
+        return shown < total
+            ? `Showing the top ${formatNumber(shown)} of ${formatNumber(total)} unique albums, ranked by scrobbles.`
+            : `${formatNumber(shown)} unique albums ranked by scrobbles.`;
     }
 </script>
 
 <svelte:head>
-    <title>Listens</title>
+    <title>listens</title>
 </svelte:head>
 
 <div class="listens-shell transition-all duration-[2000ms] h-full w-full max-w-md space-y-10 sm:max-w-md md:max-w-xl lg:max-w-4xl">
@@ -141,7 +152,7 @@
             <div class="year-copy">
                 <p>year to date</p>
                 <h2>{formatNumber(stats.year.scrobbles)} scrobbles in {new Date(stats.year.periodStart).getFullYear()}</h2>
-                <span>{formatNumber(stats.year.tracks)} tracks, {formatNumber(stats.year.artists)} artists, {formatNumber(stats.year.albums)} albums. {topArtistLine(stats)}</span>
+                <span>{formatNumber(stats.year.tracks)} unique tracks, {formatNumber(stats.year.artists)} unique artists, {formatNumber(stats.year.albums)} unique albums. {topArtistLine(stats)}</span>
             </div>
 
             <div class="month-bars" aria-label="Monthly scrobbles this year">
@@ -165,15 +176,15 @@
             </div>
             <div>
                 <strong>{formatNumber(stats.tracks)}</strong>
-                <span>{stats.periodLabel} tracks</span>
+                <span>unique tracks</span>
             </div>
             <div>
                 <strong>{formatNumber(stats.artists)}</strong>
-                <span>{stats.periodLabel} artists</span>
+                <span>unique artists</span>
             </div>
             <div>
                 <strong>{formatNumber(stats.albums)}</strong>
-                <span>{stats.periodLabel} albums</span>
+                <span>unique albums</span>
             </div>
         </section>
     {/if}

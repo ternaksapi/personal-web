@@ -1,6 +1,13 @@
 import { json } from '@sveltejs/kit';
 import { STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET, STRAVA_REFRESH_TOKEN } from '$env/static/private';
 
+const STRAVA_CACHE_TTL_MS = 15 * 60 * 1000;
+const STRAVA_CACHE_CONTROL = 'public, max-age=0, s-maxage=900, stale-while-revalidate=86400';
+
+let cachedSnapshot = null;
+let cacheExpiresAt = 0;
+let inFlightSnapshot = null;
+
 // Function to get a fresh access token using the refresh token
 async function getAccessToken() {
     const body = new URLSearchParams({
@@ -101,63 +108,103 @@ async function getCurrentYearRuns(accessToken) {
     return allRuns;
 }
 
+async function createStravaSnapshot() {
+    const accessToken = await getAccessToken();
+    const currentYearRuns = await getCurrentYearRuns(accessToken);
+        
+    // Process the runs for display
+    const processedRuns = currentYearRuns.map(run => {
+        // Handle potential missing or undefined properties
+        const startLat = run.start_latlng && run.start_latlng.length > 0 ? run.start_latlng[0] : null;
+        const startLng = run.start_latlng && run.start_latlng.length > 0 ? run.start_latlng[1] : null;
+            
+        return {
+            id: run.id,
+            name: run.name || 'Unnamed Activity',
+            date: new Date(run.start_date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }),
+            distance: (run.distance / 1000).toFixed(1), // kilometers
+            time: formatTime(run.moving_time),
+            pace: formatPace(run.moving_time, run.distance),
+            elevation: Math.round(run.total_elevation_gain || 0), // meters
+            kudos: run.kudos_count || 0,
+            athleteId: run.athlete?.id || '',
+            // Add map data with fallbacks for missing data
+            map: run.map?.summary_polyline || null,
+            startLat: startLat,
+            startLng: startLng
+        };
+    });
+        
+    // Calculate stats for current year
+    const totalDistance = currentYearRuns.reduce((sum, run) => sum + (run.distance / 1000), 0);
+    const longestRun = currentYearRuns.length > 0
+        ? Math.max(...currentYearRuns.map(run => run.distance / 1000))
+        : 0;
+    const bestEfforts = buildBestEfforts(currentYearRuns);
+        
+    const currentYear = new Date().getFullYear();
+        
+    return {
+        activities: processedRuns,
+        stats: {
+            totalRuns: currentYearRuns.length,
+            totalDistance: totalDistance.toFixed(1),
+            longestRun: longestRun.toFixed(1),
+            year: currentYear,
+            bestEfforts
+        }
+    };
+}
+
+async function getStravaSnapshot() {
+    if (cachedSnapshot && Date.now() < cacheExpiresAt) {
+        return cachedSnapshot;
+    }
+
+    if (!inFlightSnapshot) {
+        inFlightSnapshot = createStravaSnapshot()
+            .then(snapshot => {
+                cachedSnapshot = snapshot;
+                cacheExpiresAt = Date.now() + STRAVA_CACHE_TTL_MS;
+                return snapshot;
+            })
+            .finally(() => {
+                inFlightSnapshot = null;
+            });
+    }
+
+    return inFlightSnapshot;
+}
+
 // GET endpoint to fetch activities
 export async function GET() {
     try {
-        const accessToken = await getAccessToken();
-        const currentYearRuns = await getCurrentYearRuns(accessToken);
-        
-        // Process the runs for display
-        const processedRuns = currentYearRuns.map(run => {
-            // Handle potential missing or undefined properties
-            const startLat = run.start_latlng && run.start_latlng.length > 0 ? run.start_latlng[0] : null;
-            const startLng = run.start_latlng && run.start_latlng.length > 0 ? run.start_latlng[1] : null;
-            
-            return {
-                id: run.id,
-                name: run.name || 'Unnamed Activity',
-                date: new Date(run.start_date).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                }),
-                distance: (run.distance / 1000).toFixed(1), // kilometers
-                time: formatTime(run.moving_time),
-                pace: formatPace(run.moving_time, run.distance),
-                elevation: Math.round(run.total_elevation_gain || 0), // meters
-                kudos: run.kudos_count || 0,
-                athleteId: run.athlete?.id || '',
-                // Add map data with fallbacks for missing data
-                map: run.map?.summary_polyline || null,
-                startLat: startLat,
-                startLng: startLng
-            };
-        });
-        
-        // Calculate stats for current year
-        const totalDistance = currentYearRuns.reduce((sum, run) => sum + (run.distance / 1000), 0);
-        const longestRun = currentYearRuns.length > 0 
-            ? Math.max(...currentYearRuns.map(run => run.distance / 1000)) 
-            : 0;
-        const bestEfforts = buildBestEfforts(currentYearRuns);
-        
-        const currentYear = new Date().getFullYear();
-        
-        return json({
-            activities: processedRuns,
-            stats: {
-                totalRuns: currentYearRuns.length,
-                totalDistance: totalDistance.toFixed(1),
-                longestRun: longestRun.toFixed(1),
-                year: currentYear,
-                bestEfforts
+        const snapshot = await getStravaSnapshot();
+
+        return json(snapshot, {
+            headers: {
+                'cache-control': STRAVA_CACHE_CONTROL
             }
         });
     } catch (error) {
         console.error('Error fetching Strava activities:', error);
+
+        if (cachedSnapshot) {
+            return json(cachedSnapshot, {
+                headers: {
+                    'cache-control': STRAVA_CACHE_CONTROL,
+                    'x-data-source': 'stale-cache'
+                }
+            });
+        }
+
         return json({ 
             error: 'Failed to fetch activities',
-            message: error.message,
+            message: 'Running data is temporarily unavailable.',
             activities: [],
             stats: {
                 totalRuns: 0,
@@ -165,6 +212,11 @@ export async function GET() {
                 longestRun: '0.0',
                 year: new Date().getFullYear(),
                 bestEfforts: []
+            }
+        }, {
+            status: 503,
+            headers: {
+                'cache-control': 'no-store'
             }
         });
     }

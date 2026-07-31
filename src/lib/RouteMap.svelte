@@ -14,30 +14,43 @@
     let mapContainer;
     let mapboxgl;
     let mapLoaded = false;
+    let mapError = '';
 
     $: routeCoordinates = decodePolyline(polyline);
     $: routeShape = getRouteShape(routeCoordinates);
     $: routeFrameHeight = frameHeightFor(routeShape);
     
-    onMount(async () => {
-        if (!browser || !polyline || !MAPBOX_ACCESS_TOKEN) return;
-        
-        try {
-            // Dynamically import mapbox-gl
-            const mapboxModule = await import('mapbox-gl');
-            mapboxgl = mapboxModule.default;
-            
-            // Import mapbox-gl CSS
-            const mapboxStyles = document.createElement('link');
-            mapboxStyles.rel = 'stylesheet';
-            mapboxStyles.href = 'https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css';
-            document.head.appendChild(mapboxStyles);
-            
-            // Initialize map
-            setTimeout(initMap, 100);
-        } catch (error) {
-            console.error('Failed to load Mapbox:', error);
+    onMount(() => {
+        if (!browser) return;
+
+        if (!polyline) {
+            mapError = 'No route data available';
+            mapLoaded = true;
+            return;
         }
+
+        if (!MAPBOX_ACCESS_TOKEN) {
+            mapError = 'Map unavailable';
+            mapLoaded = true;
+            return;
+        }
+
+        async function loadMap() {
+            try {
+                const [mapboxModule] = await Promise.all([
+                    import('mapbox-gl'),
+                    import('mapbox-gl/dist/mapbox-gl.css')
+                ]);
+                mapboxgl = mapboxModule.default;
+                initMap();
+            } catch (error) {
+                console.error('Failed to load Mapbox:', error);
+                mapError = 'Map unavailable';
+                mapLoaded = true;
+            }
+        }
+
+        loadMap();
     });
     
     onDestroy(() => {
@@ -372,7 +385,11 @@
 {#if browser}
 <div class="route-map-frame relative w-full rounded-md overflow-hidden" data-route-id={id} style={`height: ${routeFrameHeight};`}>
     <!-- Loading placeholder shown until map is ready -->
-    {#if !mapLoaded}
+    {#if mapError}
+    <div class="absolute inset-0 z-10 flex items-center justify-center bg-slate-700 bg-opacity-70">
+        <p class="text-sm text-slate-300">{mapError}</p>
+    </div>
+    {:else if !mapLoaded}
     <div class="absolute inset-0 z-10 flex items-center justify-center bg-slate-700 bg-opacity-70">
         <p class="text-sm text-slate-300">Loading map...</p>
     </div>

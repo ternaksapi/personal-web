@@ -7,27 +7,27 @@
 <div class="site-header">
     <nav class="nav-strip" aria-label="Primary navigation">
         <a href="/" class="nav-link transition-all duration-150 {$page.url.pathname === '/' ? 'active' : ''}">
-            <span tabindex="0" role="text"> [kalkalkal.xyz] </span>
+            [kalkalkal.xyz]
         </a>
-        <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
+        <span class="nav-separator inline sm:invisible sm:block sm:pr-0" aria-hidden="true">•</span>
         <a href="/cv" class="nav-link transition-all duration-150 {$page.url.pathname === '/cv' ? 'active' : ''}">
-            <span tabindex="0" role="text"> [works] </span>
+            [works]
         </a>
-        <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
+        <span class="nav-separator inline sm:invisible sm:block sm:pr-0" aria-hidden="true">•</span>
         <a href="/runs" class="nav-link transition-all duration-150 {$page.url.pathname === '/runs' ? 'active' : ''}">
-            <span tabindex="0" role="text"> [runs] </span>
+            [runs]
         </a>
-        <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
+        <span class="nav-separator inline sm:invisible sm:block sm:pr-0" aria-hidden="true">•</span>
         <a href="/reads" class="nav-link transition-all duration-150 {$page.url.pathname === '/reads' ? 'active' : ''}">
-            <span tabindex="0" role="text"> [reads] </span>
+            [reads]
         </a>
-        <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
+        <span class="nav-separator inline sm:invisible sm:block sm:pr-0" aria-hidden="true">•</span>
         <a href="/listens" class="nav-link transition-all duration-150 {$page.url.pathname === '/listens' ? 'active' : ''}">
-            <span tabindex="0" role="text"> [listens] </span>
+            [listens]
         </a>
-        <p class="nav-separator inline sm:invisible sm:block sm:pr-0">•</p>
+        <span class="nav-separator inline sm:invisible sm:block sm:pr-0" aria-hidden="true">•</span>
         <a href="/writes" class="nav-link transition-all duration-150 {$page.url.pathname === '/writes' ? 'active' : ''}">
-            <span tabindex="0" role="text"> [writes] </span>
+            [writes]
         </a>
     </nav>
     

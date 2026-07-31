@@ -1,10 +1,5 @@
 <script>
     import { theme } from '$lib/theme.js';
-    import { onMount } from 'svelte';
-
-    onMount(() => {
-        theme.init();
-    });
 
     function toggleTheme() {
         theme.toggle();
@@ -15,6 +10,7 @@
     on:click={toggleTheme}
     class="theme-toggle transition-all duration-150 hover:bg-opacity-70"
     aria-label="Toggle theme"
+    aria-pressed={$theme === 'dark'}
     title="Toggle between light and dark mode"
 >
     {#if $theme === 'dark'}

@@ -36,3 +36,57 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+## Automatic listens sync
+
+The `/listens` page reads its latest prepared snapshot from
+`public.listens_snapshots` in Supabase. If that request fails, it falls back to
+`src/lib/data/spotifyAlbums.json`, so a Supabase outage does not break the page.
+
+The `sync-listens` Edge Function refreshes the snapshot from Last.fm. A
+Postgres Cron job invokes it at minute 17 every six hours. The function reuses
+the existing album catalogue for Spotify artwork and links, and uses Last.fm
+artwork for newly seen albums.
+
+### One-time activation
+
+1. Authenticate and link the local Supabase CLI:
+
+   ```powershell
+   npx supabase login
+   npx supabase link --project-ref YOUR_PROJECT_REF
+   ```
+
+2. Apply the snapshot table and six-hour Cron schedule:
+
+   ```powershell
+   npx supabase db push
+   ```
+
+3. Add the Edge Function secrets. Use the existing values from `.env`:
+
+   ```powershell
+   npx supabase secrets set LASTFM_API_KEY=YOUR_VALUE LASTFM_USERNAME=YOUR_VALUE LASTFM_SYNC_MAX_PAGES=100 LISTENS_SYNC_MINUTES=30
+   ```
+
+4. Deploy the function:
+
+   ```powershell
+   npx supabase functions deploy sync-listens
+   ```
+
+5. In the Supabase SQL Editor, run
+   `supabase/setup-listens-vault.sql.example` after replacing its two
+   placeholders. These encrypted Vault values authorize Cron to call the
+   protected function.
+
+6. Seed the database once with the existing snapshot:
+
+   ```powershell
+   npm run listens:seed
+   ```
+
+After the normal website deployment containing this code, listening updates no
+longer require a new website build or deployment. Supabase refreshes the data,
+and the page checks for a newer snapshot on each request with a five-minute CDN
+cache.

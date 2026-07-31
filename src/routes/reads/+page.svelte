@@ -107,7 +107,7 @@
 </script>
 
 <svelte:head>
-    <title>Reading List</title>
+    <title>reads</title>
 </svelte:head>
 
 <div class="reads-shell transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10 sm:max-w-md md:max-w-xl lg:max-w-2xl">
@@ -121,8 +121,10 @@
         </div>
 
         <div class="shelf-controls w-full mb-8 space-y-4">
+            <label for="read-search" class="sr-only">Search the reading list</label>
             <input
-                type="text"
+                id="read-search"
+                type="search"
                 placeholder="Search the shelf..."
                 bind:value={searchTerm}
                 class="shelf-search w-full"
@@ -133,6 +135,7 @@
                     <button
                         class={selectedTopic === topic ? 'selected-topic' : ''}
                         on:click={() => selectTopic(topic)}
+                        aria-pressed={selectedTopic === topic}
                     >
                         {topic}
                     </button>

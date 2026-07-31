@@ -5,9 +5,7 @@
     import { theme } from '$lib/theme.js';
     import { onMount } from 'svelte';
 
-    onMount(() => {
-        theme.init();
-    });
+    onMount(() => theme.init());
 </script>
 
 {#if $navigating}

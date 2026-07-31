@@ -5,18 +5,32 @@
     export let previewImage = '/laptop placeholder.png';
 </script>
 
-<a href={href} target="_blank" rel="noopener noreferrer" class="project-card">
-    <div class="card-border"></div>
-    <div class="card-content">
-        <div class="project-content">
-            <h3 class="project-title">{title}</h3>
-            <p class="project-description">{description}</p>
+{#if href}
+    <a {href} target="_blank" rel="noopener noreferrer" class="project-card">
+        <div class="card-border"></div>
+        <div class="card-content">
+            <div class="project-content">
+                <h3 class="project-title">{title}</h3>
+                <p class="project-description">{description}</p>
+            </div>
+            <div class="project-preview">
+                <img src={previewImage} alt="{title} preview" class="preview-image" loading="lazy" decoding="async" />
+            </div>
         </div>
-        <div class="project-preview">
-            <img src={previewImage} alt="{title} preview" class="preview-image" />
+    </a>
+{:else}
+    <article class="project-card project-card--static">
+        <div class="card-content">
+            <div class="project-content">
+                <h3 class="project-title">{title}</h3>
+                <p class="project-description">{description}</p>
+            </div>
+            <div class="project-preview">
+                <img src={previewImage} alt="{title} preview" class="preview-image" loading="lazy" decoding="async" />
+            </div>
         </div>
-    </div>
-</a>
+    </article>
+{/if}
 
 <style>
     .project-card {
@@ -34,12 +48,22 @@
         z-index: 50;
     }
 
+    .project-card--static:hover {
+        transform: none;
+        z-index: 1;
+    }
+
     /* Dark mode glow on hover */
     :global([data-theme="dark"]) .project-card:hover {
         box-shadow: 
             0 0 25px rgba(148, 163, 184, 0.2),
             0 0 50px rgba(148, 163, 184, 0.1),
             0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    :global([data-theme="dark"]) .project-card--static:hover,
+    :global([data-theme="light"]) .project-card--static:hover {
+        box-shadow: none;
     }
 
     /* Light mode glow on hover */
@@ -161,6 +185,10 @@
     .project-card:hover .project-preview {
         transform: scale(1.4) rotate(5deg) translateX(10px) translateY(-10px);
         z-index: 10;
+    }
+
+    .project-card--static:hover .project-preview {
+        transform: none;
     }
 
     .preview-image {
