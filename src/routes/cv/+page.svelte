@@ -17,11 +17,11 @@
             </h1>
             <!---->
             <p class="max-w-md text-sm text-slate-300">
-                Computer Science Student
+                Computer Science Graduate
             </p>
             <!---->
-            <a class="align-baseline text-xs leading-none text-slate-500 transition-colors hover:text-slate-200" target="_blank" rel="noopener noreferrer" href="https://maps.app.goo.gl/LHsbFfPdi8RG8uWw5">
-                Depok, Indonesia
+            <a class="align-baseline text-xs leading-none text-slate-500 transition-colors hover:text-slate-200" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Jakarta%2C%20Indonesia">
+                Jakarta, Indonesia
                 <!---->
             </a>
             <div class='flex flex-wrap gap-x-2 pt-1 text-sm text-slate-500 print:hidden'>
@@ -380,10 +380,10 @@
                         <h4 class="text-sm leading-none">Teaching Assistant of Advanced Programming</h4>
                         <p class="text-xs text-slate-500 mt-1">Depok, Indonesia</p>
                     </div>
-                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Jan 2025 - June 2025</div>
+                    <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Jan 2025 - Jun 2025</div>
                 </div>
                 <div class="hover:none mt-2 text-xs text-slate-400">
-                    Assist the lecturer in teaching the course, help students with their assignments, and provide feedback on their group project.
+                    Assisted the lecturer in teaching the course, supported students with their assignments, and provided feedback on their group projects.
                 </div>
                 <div class="hover:none flex items-center">
                     <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">
@@ -433,7 +433,7 @@
                     <div class="hidden text-nowrap text-xs tabular-nums text-slate-500 sm:block sm:text-sm">Aug 2024 - Dec 2024</div>
                 </div>
                 <div class="hover:none mt-2 text-xs text-slate-400">
-                   Under Ir. Suryana Setiawan, M.Sc., Ph.D., I assisted and provide assignments feedback for 36 international program students in the course of Automata and Theory of Languages.
+                   Under Ir. Suryana Setiawan, M.Sc., Ph.D., I assisted with the course and provided assignment feedback to 36 international program students in Automata and Theory of Languages.
                 </div>
                 <div class="hover:none flex items-center">
                     <div class="hidden flex-wrap justify-start gap-1 py-2 sm:flex print:hidden">

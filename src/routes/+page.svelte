@@ -63,8 +63,8 @@
         <div class="flex flex-col space-y-5">
             <h1 class="whitespace-nowrap text-[clamp(1.25rem,6.2vw,1.5rem)] font-bold sm:text-3xl">Muhammad Yusuf Haikal</h1>
             <a class="w-fit text-slate-300" href="mailto:yusufhaikaln7@gmail.com">yusufhaikaln7@gmail.com</a>
-            <p class="text-slate-500">Depok, Indonesia</p>
-            <div class="flex h-full w-full max-w lg flex-col items-start space-y-4">
+            <p class="text-slate-500">Jakarta, Indonesia</p>
+            <div class="flex h-full w-full max-w-lg flex-col items-start space-y-4">
                 <Polaroid 
                     src="/new_front.jpeg"
                     alt="Muhammad Yusuf Haikal in graduation attire"
@@ -76,7 +76,7 @@
                     <span id="typing-text">{currentText}</span>
                     <span class="cursor">|</span>
                 </div>
-                <p>I'm Haikal, a Computer Science graduate currently doing AI related things @ Shopee under SPX Express.</p>
+                <p>I'm Haikal, a Computer Science graduate currently working across product + engineering at SPX Express, Shopee.</p>
                 <p>I build AI and data products. Driven by <a href="https://www.cs.ox.ac.uk/activities/ieg/e-library/sources/t_article.pdf" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-70">Turing's question</a> and the suspicion that intelligent systems can help people make genuinely better decisions.</p>
                 <p>Reach me through my <a href="mailto:yusufhaikaln7@gmail.com" class="underline hover:opacity-70">email</a> or on <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/" class="underline hover:opacity-70">LinkedIn</a>.</p>
             </div>
