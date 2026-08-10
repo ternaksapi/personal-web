@@ -76,7 +76,7 @@
                     <span id="typing-text">{currentText}</span>
                     <span class="cursor">|</span>
                 </div>
-                <p>I'm Haikal, a Computer Science graduate currently working across product + engineering at SPX Express, Shopee.</p>
+                <p>I'm Haikal, a Computer Science graduate currently doing product + engineering @ Shopee under SPX Express.</p>
                 <p>I build AI and data products. Driven by <a href="https://www.cs.ox.ac.uk/activities/ieg/e-library/sources/t_article.pdf" target="_blank" rel="noopener noreferrer" class="underline hover:opacity-70">Turing's question</a> and the suspicion that intelligent systems can help people make genuinely better decisions.</p>
                 <p>Reach me through my <a href="mailto:yusufhaikaln7@gmail.com" class="underline hover:opacity-70">email</a> or on <a href="https://www.linkedin.com/in/muhammad-yusuf-haikal/" class="underline hover:opacity-70">LinkedIn</a>.</p>
             </div>
