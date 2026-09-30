@@ -1,5 +1,7 @@
 import spotifySnapshot from '$lib/data/spotifyAlbums.json';
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { error } from '@sveltejs/kit';
+const archives = import.meta.glob('/src/lib/data/listens-history/*.json');
 
 function compactStats(stats) {
     if (!stats) return null;
@@ -104,12 +106,19 @@ function pageData(snapshot) {
     };
 }
 
-export async function load({ fetch, setHeaders }) {
-    const snapshot = await liveSnapshot(fetch) || spotifySnapshot;
+export async function load({ fetch, setHeaders, url }) {
+    const currentYear = Number(new Intl.DateTimeFormat('en', { year: 'numeric', timeZone: 'Asia/Jakarta' }).format(new Date()));
+    const historyYears = Object.keys(archives).map(path => Number(path.match(/(\d{4})\.json$/)[1])).filter(year => year < currentYear).sort((a,b) => b-a);
+    const selectedYear = url.searchParams.has('year') ? Number(url.searchParams.get('year')) : currentYear;
+    const historical = selectedYear !== currentYear;
+    if (historical && !historyYears.includes(selectedYear)) error(404, 'Listening history is unavailable for this year');
+    const snapshot = historical
+        ? (await archives[`/src/lib/data/listens-history/${selectedYear}.json`]()).default
+        : await liveSnapshot(fetch) || spotifySnapshot;
 
     setHeaders({
         'cache-control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=3600'
     });
 
-    return pageData(snapshot);
+    return { ...pageData(snapshot), selectedYear, historical, years: [currentYear, ...historyYears] };
 }

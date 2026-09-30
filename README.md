@@ -91,7 +91,19 @@ longer require a new website build or deployment. Supabase refreshes the data,
 and the page checks for a newer snapshot on each request with a five-minute CDN
 cache.
 
-### Repairing a Last.fm history gap
+### Previous years
+
+The listens year selector loads one prepared yearly summary at a time. Archives
+for 2016–2025 come from the Spotify audio export, count entries with at least
+80 seconds played, and group estimated start times in Asia/Jakarta. This is an
+approximation, not Last.fm's duration-based scrobble rule. Only aggregate counts,
+top album/track names, artwork and links are published; raw export records are
+not included. Current-year data continues to use the live Supabase snapshot.
+
+Regenerate archives with `node scripts/build-listens-archive.mjs "PATH_TO_EXPORT"`.
+The generator excludes the current year and includes the top 60 albums per year.
+
+### Importing a history gap
 
 Spotify's Extended Streaming History export can be imported into the private
 `public.listens_backfill_events` table. The importer ignores IP, device,

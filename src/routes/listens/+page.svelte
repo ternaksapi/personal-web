@@ -3,14 +3,14 @@
 
     export let data;
 
-    let stats = data.stats || null;
-    let albumWalls = data.albumWalls || {};
-    const albumIndex = data.albumIndex || {};
-    const hydrateWall = (entries) => Array.isArray(entries)
-        ? entries.map((entry) => ({ ...albumIndex[entry.albumId], ...entry }))
+    $: stats = data.stats || null;
+    $: albumWalls = data.albumWalls || {};
+    $: albumIndex = data.albumIndex || {};
+    const hydrateWall = (entries, index) => Array.isArray(entries)
+        ? entries.map((entry) => ({ ...index[entry.albumId], ...entry }))
         : [];
-    const currentMonthAlbums = hydrateWall(albumWalls.currentMonth);
-    const yearToDateAlbums = hydrateWall(albumWalls.yearToDate);
+    $: currentMonthAlbums = hydrateWall(albumWalls.currentMonth, albumIndex);
+    $: yearToDateAlbums = hydrateWall(albumWalls.yearToDate, albumIndex);
     let wallMode = 'yearToDate';
     let activeId = null;
     let wallOptions = [];
@@ -86,7 +86,7 @@
             return 'A recent snapshot of what has been in rotation.';
         }
 
-        return `${stats.year.periodLabel}, Last.fm logged ${formatNumber(stats.year.scrobbles)} scrobbles across ${formatNumber(stats.year.tracks)} unique tracks and ${formatNumber(stats.year.artists)} unique artists. The wall switches between this month and the year-to-date album stack.`;
+        return `${stats.year.periodLabel}: ${formatNumber(stats.year.scrobbles)} listens across ${formatNumber(stats.year.tracks)} unique tracks and ${formatNumber(stats.year.artists)} unique artists.`;
     }
 
     function formatNumber(value) {
@@ -104,7 +104,7 @@
     function topArtistLine(stats) {
         if (!stats?.year?.topArtist) return '';
 
-        return `${stats.year.topArtist.artistName} has the most scrobbles this year (${formatNumber(stats.year.topArtist.scrobbles)}).`;
+        return `${stats.year.topArtist.artistName} leads this period (${formatNumber(stats.year.topArtist.scrobbles)} listens).`;
     }
 
     function barHeight(month) {
@@ -114,7 +114,7 @@
     function scrobbleCopy(album) {
         if (!album?.lastfmScrobbles) return '';
 
-        return `${formatNumber(album.lastfmScrobbles)} album scrobbles in ${album.lastfmPeriodLabel || 'this period'}`;
+        return `${formatNumber(album.lastfmScrobbles)} album listens in ${album.lastfmPeriodLabel || 'this period'}`;
     }
 
     function wallDescription(wall) {
@@ -124,8 +124,8 @@
         const total = wall.stats.albums || shown;
 
         return shown < total
-            ? `Showing the top ${formatNumber(shown)} of ${formatNumber(total)} unique albums, ranked by scrobbles.`
-            : `${formatNumber(shown)} unique albums ranked by scrobbles.`;
+            ? `Showing the top ${formatNumber(shown)} of ${formatNumber(total)} unique albums, ranked by listens.`
+            : `${formatNumber(shown)} unique albums ranked by listens.`;
     }
 </script>
 
@@ -147,17 +147,26 @@
         {/if}
     </section>
 
+    <form method="GET" class="year-picker">
+        <label for="listening-year">Listening year</label>
+        <select id="listening-year" name="year">
+            {#each data.years as year}<option value={year} selected={year === data.selectedYear}>{year}</option>{/each}
+        </select>
+        <button type="submit">View year</button>
+    </form>
+    <p class="history-note">{data.historical ? 'Spotify export archive: plays of at least 80 seconds, grouped by Jakarta time. These are reconstructed listens, not exact Last.fm scrobbles. Early years may cover only part of the year.' : 'Live Last.fm history, including a Spotify export repair using an 80-second minimum for the missing 2026 period.'}</p>
+
     {#if stats?.year?.scrobbles}
-        <section class="year-panel" aria-label="Year to date listening rhythm">
+        <section class="year-panel" aria-label="Selected year listening rhythm">
             <div class="year-copy">
-                <p>year to date</p>
-                <h2>{formatNumber(stats.year.scrobbles)} scrobbles in {new Date(stats.year.periodStart).getFullYear()}</h2>
+                <p>{data.historical ? 'year in review' : 'year to date'}</p>
+                <h2>{formatNumber(stats.year.scrobbles)} listens in {data.selectedYear}</h2>
                 <span>{formatNumber(stats.year.tracks)} unique tracks, {formatNumber(stats.year.artists)} unique artists, {formatNumber(stats.year.albums)} unique albums. {topArtistLine(stats)}</span>
             </div>
 
-            <div class="month-bars" aria-label="Monthly scrobbles this year">
+            <div class="month-bars" aria-label="Monthly listens for the selected year">
                 {#each stats.year.months as month}
-                    <div class="month-bar" title={`${month.label}: ${formatNumber(month.scrobbles)} scrobbles`}>
+                    <div class="month-bar" title={`${month.label}: ${formatNumber(month.scrobbles)} listens`}>
                         <span class="bar-track">
                             <span class="bar-fill" style={`height: ${barHeight(month)};`}></span>
                         </span>
@@ -168,7 +177,7 @@
         </section>
     {/if}
 
-    {#if stats?.scrobbles}
+    {#if stats?.scrobbles && !data.historical}
         <section class="listening-ledger" aria-label="Listening stats">
             <div>
                 <strong>{formatNumber(stats.scrobbles)}</strong>
@@ -267,7 +276,7 @@
                             <span>{album.albumName}</span>
                             <span>{artistsFor(album)}</span>
                             {#if album.lastfmScrobbles}
-                                <span>{formatNumber(album.lastfmScrobbles)} scrobbles in {album.lastfmPeriodLabel || 'this period'}</span>
+                                <span>{formatNumber(album.lastfmScrobbles)} listens in {album.lastfmPeriodLabel || 'this period'}</span>
                             {/if}
                         </figcaption>
                     </figure>
@@ -283,6 +292,12 @@
 </div>
 
 <style>
+    .year-picker { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+    .year-picker select, .year-picker button { font: inherit; color: inherit; background: transparent; border: 1px solid currentColor; border-radius: .35rem; padding: .4rem .65rem; }
+    .year-picker select option { color: #111; background: #fff; }
+    .year-picker button { cursor: pointer; }
+    .year-picker :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+    .history-note { font-size: .8rem; line-height: 1.5; opacity: .8; }
     .listens-shell {
         --surface: #ffffff;
         --surface-soft: #f8fafc;
