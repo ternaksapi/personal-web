@@ -11,7 +11,8 @@
 		"spotify:exchange": "node scripts/spotify-exchange-code.mjs",
 		"spotify:sync": "node scripts/sync-spotify.mjs",
 		"listens:sync": "node scripts/sync-spotify.mjs",
-		"listens:seed": "node scripts/seed-listens-snapshot.mjs"
+		"listens:seed": "node scripts/seed-listens-snapshot.mjs",
+		"listens:backfill": "node scripts/import-spotify-backfill.mjs"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",

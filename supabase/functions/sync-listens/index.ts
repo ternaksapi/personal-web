@@ -511,6 +511,53 @@ async function currentSnapshot(
     return rows?.[0] || null;
 }
 
+async function backfillTracks(
+    supabaseUrl: string,
+    serviceRoleKey: string,
+    start: Date,
+    end: Date
+): Promise<LastfmTrack[]> {
+    const tracks: LastfmTrack[] = [];
+    const pageSize = 1000;
+
+    for (let offset = 0; ; offset += pageSize) {
+        const url = new URL('/rest/v1/listens_backfill_events', supabaseUrl);
+        url.searchParams.set('select', 'track_name,artist_name,album_name,played_at,image_url');
+        url.searchParams.set(
+            'and',
+            `(played_at.gte.${start.toISOString()},played_at.lte.${end.toISOString()})`
+        );
+        url.searchParams.set('order', 'played_at.asc');
+        url.searchParams.set('limit', String(pageSize));
+        url.searchParams.set('offset', String(offset));
+
+        const response = await fetch(url, {
+            headers: {
+                apikey: serviceRoleKey,
+                Authorization: `Bearer ${serviceRoleKey}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Could not read listening backfill: HTTP ${response.status}`);
+        }
+
+        const rows = await response.json() as Array<Record<string, unknown>>;
+        tracks.push(...rows.map((row) => ({
+            trackName: String(row.track_name || ''),
+            artistName: String(row.artist_name || ''),
+            albumName: String(row.album_name || ''),
+            albumMbid: '',
+            imageUrl: String(row.image_url || ''),
+            playedAt: String(row.played_at || '')
+        })));
+
+        if (rows.length < pageSize) break;
+    }
+
+    return tracks;
+}
+
 async function saveSnapshot(
     supabaseUrl: string,
     serviceRoleKey: string,
@@ -578,13 +625,20 @@ Deno.serve(async (request) => {
         const local = jakartaParts(now);
         const yearStart = jakartaStart(local.year, 0);
         const monthStart = jakartaStart(local.year, local.month);
-        const yearTracks = await fetchYearScrobbles(
+        const lastfmYearTracks = await fetchYearScrobbles(
             lastfmApiKey,
             lastfmUsername,
             yearStart,
             now,
             maxPages
         );
+        const importedTracks = await backfillTracks(
+            supabaseUrl,
+            serviceRoleKey,
+            yearStart,
+            now
+        );
+        const yearTracks = [...lastfmYearTracks, ...importedTracks];
         const monthTracks = yearTracks.filter((track) =>
             new Date(track.playedAt).getTime() >= monthStart.getTime()
         );
@@ -647,6 +701,7 @@ Deno.serve(async (request) => {
             durationMs: Date.now() - startedAt,
             monthScrobbles: monthStats.scrobbles,
             yearScrobbles: yearStats.scrobbles,
+            importedScrobbles: importedTracks.length,
             monthAlbums: currentMonthWall.length,
             yearAlbums: yearToDateWall.length
         });

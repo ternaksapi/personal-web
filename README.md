@@ -90,3 +90,18 @@ After the normal website deployment containing this code, listening updates no
 longer require a new website build or deployment. Supabase refreshes the data,
 and the page checks for a newer snapshot on each request with a five-minute CDN
 cache.
+
+### Repairing a Last.fm history gap
+
+Spotify's Extended Streaming History export can be imported into the private
+`public.listens_backfill_events` table. The importer ignores IP, device,
+location, and account fields; it uploads only sanitized track metadata and
+timestamps. Imported events are merged with Last.fm whenever `sync-listens`
+builds a snapshot.
+
+Run a dry run first, then apply the reviewed result:
+
+```powershell
+npm run listens:backfill -- "C:\path\to\Spotify Extended Streaming History"
+node scripts/import-spotify-backfill.mjs "C:\path\to\Spotify Extended Streaming History" --apply
+```
