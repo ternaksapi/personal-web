@@ -1,8 +1,10 @@
 <script>
     import Header from "$lib/header.svelte";
     import Polaroid from "$lib/Polaroid.svelte";
+    import AsciiRippleBackground from "$lib/AsciiRippleBackground.svelte";
     import { onMount, onDestroy } from 'svelte';
 
+    let homepageContent;
     const greetings = ["Hello!", "Hola!", "Bonjour!", "Hallo!", "Ciao!"];
     let currentIndex = 0;
     let currentText = '';
@@ -57,7 +59,7 @@
 <svelte:head>
     <title>kalkalkal.xyz</title>
 </svelte:head>
-<div class="transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10  sm:max-w-md md:max-w-lg lg:max-w-lg ">
+<div bind:this={homepageContent} class="homepage-content transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10  sm:max-w-md md:max-w-lg lg:max-w-lg ">
     <Header />
     <div class="flex h-full w-full max-w-lg flex-col items-start">
         <div class="flex flex-col space-y-5">
@@ -97,7 +99,13 @@
         </div>
     </div>
 </div>
+<AsciiRippleBackground contentElement={homepageContent} />
 <style>
+    .homepage-content {
+        position: relative;
+        z-index: 1;
+    }
+
     /* Theme-aware greeting text */
     :global([data-theme="dark"]) .greeting-text {
         color: #ffffff;

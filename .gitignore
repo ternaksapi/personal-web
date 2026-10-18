@@ -26,3 +26,8 @@ migrate-data.js
 
 # Local Supabase CLI state
 supabase/.temp/
+
+# Local Strava export input (only the prepared runs snapshot is published)
+/strava-export/
+/strava/
+/src/lib/data/runs.json

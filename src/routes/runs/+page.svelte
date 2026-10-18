@@ -1,530 +1,173 @@
 <script>
-    import Header from "$lib/header.svelte";
-    import RouteMap from "$lib/RouteMap.svelte";
-    import { onMount } from 'svelte';
-    import { browser } from '$app/environment';
+    import Header from '$lib/header.svelte';
+    import ProgressChart from '$lib/runs/ProgressChart.svelte';
+    import AtlasMap from '$lib/runs/AtlasMap.svelte';
+    import ChevronLeft from '@lucide/svelte/icons/chevron-left';
+    import ChevronRight from '@lucide/svelte/icons/chevron-right';
+    import ArrowUpRight from '@lucide/svelte/icons/arrow-up-right';
+    import Footprints from '@lucide/svelte/icons/footprints';
+    import X from '@lucide/svelte/icons/x';
     import { tick } from 'svelte';
-    
-    // Only import the polyline helper in the browser
-    onMount(() => {
-        if (browser) {
-            import('$lib/polyline.js');
-        }
-    });
-    
-    // Get the data loaded from the server
+    import { filterRuns, summarize, movingPace, paceLabel, progressSeries } from '$lib/runs/atlas.js';
+    import { routeArtwork } from '$lib/runs/geometry.js';
+
     export let data;
-    
-    // Destructure the data with safe defaults
-    const activities = data?.activities || [];
-    const stats = data?.stats || { totalRuns: 0, totalDistance: '0.0', longestRun: '0.0', year: new Date().getFullYear(), bestEfforts: [] };
-    const error = data?.error || null;
-    
-    // Pagination state
-    let currentPage = 0;
-    const ITEMS_PER_PAGE = 5;
-    
-    // Compute paged activities
-    $: totalPages = Math.ceil(activities.length / ITEMS_PER_PAGE);
-    $: paginatedActivities = activities.slice(
-        currentPage * ITEMS_PER_PAGE, 
-        (currentPage + 1) * ITEMS_PER_PAGE
-    );
-    
-    // Page navigation
-    function nextPage() {
-        if (currentPage < totalPages - 1) {
-            currentPage++;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }
-    
-    function prevPage() {
-        if (currentPage > 0) {
-            currentPage--;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }
-    
-    function goToPage(page) {
-        if (page >= 0 && page < totalPages) {
-            currentPage = page;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }
-    
-    // Track which maps are visible based on intersection observer
-    let visibleMaps = {};
-    let mapObserver = null;
-    let setupMapObserver = () => {};
+    let year = 'all';
+    let selectedId = null;
+    let archivePage = 0;
+    let dialog;
+    const PAGE_SIZE = 6;
+    const decimal = new Intl.NumberFormat('en', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
+    $: runs = data.atlas || [];
+    $: filtered = filterRuns(runs, year);
+    $: summary = summarize(filtered);
+    $: averagePace = movingPace(filtered);
+    $: series = progressSeries(runs, year);
+    $: selected = runs.find(run => run.id === selectedId);
+    $: totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    $: if (archivePage >= totalPages) archivePage = Math.max(0, totalPages - 1);
+    $: archive = filtered.slice(archivePage * PAGE_SIZE, (archivePage + 1) * PAGE_SIZE);
+    $: period = year === 'all' ? 'All time' : String(year);
 
-    $: if (browser && currentPage !== undefined) {
-        tick().then(() => setupMapObserver());
+    function setYear(value) { year = value; archivePage = 0; }
+    async function selectRun(id) {
+        selectedId = id;
+        await tick();
+        if (!dialog.open) dialog.showModal();
     }
-    
-    // Set up intersection observer to only render maps when they're near the viewport
-    onMount(() => {
-        if (!browser) return;
-        
-        setupMapObserver = function setupObserver() {
-            // Wait for DOM to update
-            tick().then(() => {
-                const mapContainers = document.querySelectorAll('.map-container');
-                
-                if (!mapContainers.length) return;
-
-                if (mapObserver) {
-                    mapObserver.disconnect();
-                }
-                
-                mapObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        const id = entry.target.dataset.activityId;
-                        if (entry.isIntersecting) {
-                            // Mark this map as visible when it enters viewport
-                            visibleMaps[id] = true;
-                            visibleMaps = {...visibleMaps}; // Trigger reactivity
-                        }
-                    });
-                }, {
-                    rootMargin: '200px', // Load maps when they're within 200px of viewport
-                    threshold: 0.1
-                });
-                
-                // Observe all map containers
-                mapContainers.forEach(container => {
-                    mapObserver.observe(container);
-                });
-            });
-        };
-        
-        // Initial setup
-        setupMapObserver();
-        
-        return () => mapObserver?.disconnect();
-    });
+    function closeDetails() { selectedId = null; }
+    function pageArchive(delta) { archivePage = Math.max(0, Math.min(totalPages - 1, archivePage + delta)); }
 </script>
 
-<svelte:head>
-    <title>runs</title>
-</svelte:head>
-
-<div class="runs-shell transition-all duration-[2000ms] h-full w-full sm:space-y-15 max-w-md space-y-10 sm:max-w-md md:max-w-xl lg:max-w-2xl">
-    <Header />
-    
-    <div class="flex h-full w-full max-w-lg flex-col items-start">
-        <h1 class="text-3xl font-bold mb-6">{stats?.year || new Date().getFullYear()} Running Stats</h1>
-        
-        {#if error}
-            <div class="w-full text-center py-10 text-slate-300">
-                <p>{error}</p>
-            </div>
-        {:else}
-            <p class="run-year-summary">
-                This year, I've logged <strong>{stats.totalRuns}</strong> runs for <strong>{stats.totalDistance} km</strong>, with the longest one stretching <strong>{stats.longestRun} km</strong>.
-            </p>
-
-            {#if stats.bestEfforts?.length}
-                <section class="w-full mb-8">
-                    <div class="run-section-kicker">
-                        <p>Fastest equivalents</p>
-                        <span>Estimated from each run's average pace.</span>
-                    </div>
-
-                    <div class="run-effort-grid">
-                        {#each stats.bestEfforts as effort}
-                            <div class="run-effort-card">
-                                <span>{effort.label}</span>
-                                <strong>{effort.time}</strong>
-                                {#if effort.activityName}
-                                    <small>{effort.pace}/km · {effort.activityDate}</small>
-                                {:else}
-                                    <small>No eligible run yet</small>
-                                {/if}
-                            </div>
-                        {/each}
-                    </div>
-                </section>
-            {/if}
-            
-            <!-- Activity list with pagination -->
-            <div class="w-full">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold">{stats?.year || new Date().getFullYear()} Activities</h2>
-                    {#if totalPages > 1}
-                        <div class="run-page-count text-sm">
-                            Page {currentPage + 1} of {totalPages}
-                        </div>
-                    {/if}
+<svelte:head><title>Running | kalkalkal.xyz</title><meta name="description" content="My running progress in mileage, pace, and the occasional questionable run title." /></svelte:head>
+<div class="running-atlas">
+    <div class="header-width"><Header /></div>
+    <section class="runs-heading">
+        <div><p class="eyebrow">On foot, since {data.years?.[0] || new Date().getFullYear()}</p><h1>Running</h1><p class="intro">I like to run once in a while.</p></div>
+        <a class="archive-link" href="#run-journal">The journal <ArrowUpRight size={15}/></a>
+    </section>
+    {#if !runs.length}
+        <p class="empty">No runs imported yet.</p>
+    {:else}
+        <div class="period-controls" role="group" aria-label="Filter runs by year">
+            <button type="button" class:active={year === 'all'} aria-pressed={year === 'all'} on:click={() => setYear('all')}>All time</button>
+            {#each data.years as value}<button type="button" class:active={year === value} aria-pressed={year === value} on:click={() => setYear(value)}>{value}</button>{/each}
+        </div>
+        <div class="totals" aria-live="polite">
+            <div><strong>{decimal.format(summary.distance)}<span> km</span></strong><small>Distance</small></div>
+            <div><strong>{summary.count}</strong><small>Runs</small></div>
+            <div><strong>{paceLabel(averagePace)}<span> /km</span></strong><small>Moving pace</small></div>
+            <p>{period}</p>
+        </div>
+        <ProgressChart {series} {period} importedAt={data.importedAt}/>
+        <section id="run-journal" class="route-collection" aria-label="Run journal">
+            <div class="section-heading"><h2>The run journal</h2><span class="muted">{summary.count} {summary.count === 1 ? 'entry' : 'entries'}</span></div>
+            {#if archive.length}
+                <div class="route-grid">
+                    {#each archive as run (run.id)}
+                        <button class="route-print" type="button" aria-haspopup="dialog" aria-label={`View ${run.name}, ${run.shortDate}, ${run.distance} kilometers`} on:click={() => selectRun(run.id)}>
+                            <span class="print-date">{run.shortDate}</span>
+                            <div class="print-art">{#if run.segments.length}<svg class="route-glyph" viewBox="0 0 240 120" aria-hidden="true"><path d={routeArtwork(run.segments)}/></svg>{:else}<div class="missing-art"><Footprints size={24} aria-hidden="true"/><span>No GPS recorded</span></div>{/if}</div>
+                            <span class="print-title">{run.name}</span>
+                            <span class="print-meta">{run.distance} km <span>{run.pace} /km</span></span>
+                        </button>
+                    {/each}
                 </div>
-                
-                {#if activities.length === 0}
-                    <div class="run-empty-card p-8 text-center">
-                        <p>No running activities found for {stats?.year || new Date().getFullYear()}</p>
-                    </div>
-                {:else}
-                    <div class="space-y-6">
-                        {#each paginatedActivities as activity, index (activity.id)}
-                            <div class="run-activity-card">
-                                <div class="flex justify-between items-start">
-                                    <h3 class="run-activity-title">{activity.name}</h3>
-                                    <span class="run-activity-date">{activity.date}</span>
-                                </div>
-                                <div class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-y-2 gap-x-4">
-                                    <div>
-                                        <span class="run-metric-label">Distance</span>
-                                        <p class="run-metric-value">{activity.distance} km</p>
-                                    </div>
-                                    <div>
-                                        <span class="run-metric-label">Time</span>
-                                        <p class="run-metric-value">{activity.time}</p>
-                                    </div>
-                                    <div>
-                                        <span class="run-metric-label">Pace</span>
-                                        <p class="run-metric-value">{activity.pace} /km</p>
-                                    </div>
-                                    <div>
-                                        <span class="run-metric-label">Elevation</span>
-                                        <p class="run-metric-value">{activity.elevation} m</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Map section (always shown but loaded lazily) -->
-                                <div class="run-map-shell mt-3 map-container" data-activity-id={activity.id}>
-                                    <RouteMap 
-                                        polyline={activity.map} 
-                                        startLat={activity.startLat}
-                                        startLng={activity.startLng}
-                                        id={activity.id}
-                                    />
-                                </div>
-                            </div>
-                        {/each}
-                    </div>
-                    
-                    <!-- Pagination controls -->
-                    {#if totalPages > 1}
-                        <div class="mt-8 flex justify-center items-center space-x-2">
-                            <button 
-                                class="px-3 py-1 rounded-md bg-slate-700 bg-opacity-50 text-slate-300 hover:bg-opacity-70 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                on:click={prevPage}
-                                disabled={currentPage === 0}
-                                aria-label="Previous page"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="15 18 9 12 15 6"></polyline>
-                                </svg>
-                            </button>
-                            
-                            <!-- First page always shown -->
-                            <button 
-                                class="w-8 h-8 rounded-md flex items-center justify-center transition-all"
-                                class:bg-orange-500={currentPage === 0}
-                                class:text-white={currentPage === 0}
-                                class:text-slate-400={currentPage !== 0}
-                                class:hover:bg-slate-700={currentPage !== 0}
-                                class:hover:bg-opacity-50={currentPage !== 0}
-                                class:hover:text-slate-200={currentPage !== 0}
-                                on:click={() => goToPage(0)}
-                                aria-label="Go to page 1"
-                                aria-current={currentPage === 0 ? 'page' : undefined}
-                            >
-                                1
-                            </button>
-                            
-                            <!-- Left ellipsis if needed -->
-                            {#if currentPage > 2}
-                                <span class="text-slate-500 px-1">...</span>
-                            {/if}
-                            
-                            <!-- Pages around current page -->  
-                            {#each Array(totalPages) as _, i}
-                                {@const pageNum = i}
-                                <!-- Only show pages near current page -->
-                                {#if pageNum !== 0 && pageNum !== totalPages - 1 && 
-                                     (pageNum === currentPage - 1 || 
-                                      pageNum === currentPage || 
-                                      pageNum === currentPage + 1)}
-                                    <button 
-                                        class="w-8 h-8 rounded-md flex items-center justify-center transition-all"
-                                        class:bg-orange-500={currentPage === pageNum}
-                                        class:text-white={currentPage === pageNum}
-                                        class:text-slate-400={currentPage !== pageNum}
-                                        class:hover:bg-slate-700={currentPage !== pageNum}
-                                        class:hover:bg-opacity-50={currentPage !== pageNum}
-                                        class:hover:text-slate-200={currentPage !== pageNum}
-                                        on:click={() => goToPage(pageNum)}
-                                        aria-label={`Go to page ${pageNum + 1}`}
-                                        aria-current={currentPage === pageNum ? 'page' : undefined}
-                                    >
-                                        {pageNum + 1}
-                                    </button>
-                                {/if}
-                            {/each}
-                            
-                            <!-- Right ellipsis if needed -->
-                            {#if currentPage < totalPages - 3}
-                                <span class="text-slate-500 px-1">...</span>
-                            {/if}
-                            
-                            <!-- Last page always shown (if not the first page) -->
-                            {#if totalPages > 1}
-                                <button 
-                                    class="w-8 h-8 rounded-md flex items-center justify-center transition-all"
-                                    class:bg-orange-500={currentPage === totalPages - 1}
-                                    class:text-white={currentPage === totalPages - 1}
-                                    class:text-slate-400={currentPage !== totalPages - 1}
-                                    class:hover:bg-slate-700={currentPage !== totalPages - 1}
-                                    class:hover:bg-opacity-50={currentPage !== totalPages - 1}
-                                    class:hover:text-slate-200={currentPage !== totalPages - 1}
-                                    on:click={() => goToPage(totalPages - 1)}
-                                    aria-label={`Go to page ${totalPages}`}
-                                    aria-current={currentPage === totalPages - 1 ? 'page' : undefined}
-                                >
-                                    {totalPages}
-                                </button>
-                            {/if}
-                            
-                            <button 
-                                class="px-3 py-1 rounded-md bg-slate-700 bg-opacity-50 text-slate-300 hover:bg-opacity-70 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                on:click={nextPage}
-                                disabled={currentPage === totalPages - 1}
-                                aria-label="Next page"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="9 18 15 12 9 6"></polyline>
-                                </svg>
-                            </button>
-                        </div>
-                    {/if}
-                    
-                    <div class="mt-6 w-full text-center">
-                        <a 
-                            href={`https://www.strava.com/athletes/${activities[0]?.athleteId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="inline-flex items-center justify-center text-sm text-slate-400 hover:text-slate-200 transition-colors"
-                        >
-                            <span>View more on Strava</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                                <polyline points="15 3 21 3 21 9"></polyline>
-                                <line x1="10" y1="14" x2="21" y2="3"></line>
-                            </svg>
-                        </a>
-                    </div>
+                {#if totalPages > 1}
+                    <div class="archive-pagination"><span class="muted">{archivePage * PAGE_SIZE + 1}–{Math.min(filtered.length, (archivePage + 1) * PAGE_SIZE)} of {filtered.length}</span><div><button class="icon-button" type="button" aria-label="Previous runs" title="Previous runs" disabled={archivePage === 0} on:click={() => pageArchive(-1)}><ChevronLeft size={18}/></button><span>{archivePage + 1} / {totalPages}</span><button class="icon-button" type="button" aria-label="Next runs" title="Next runs" disabled={archivePage === totalPages - 1} on:click={() => pageArchive(1)}><ChevronRight size={18}/></button></div></div>
                 {/if}
-            </div>
+            {:else}<p class="empty">No runs in {period}.</p>{/if}
+        </section>
+    {/if}
+
+    <dialog class="run-dialog" bind:this={dialog} aria-labelledby="run-detail-title" on:close={closeDetails}>
+        {#if selected}
+            <div class="detail-top"><p class="eyebrow">{selected.date}</p><button type="button" class="icon-button" aria-label="Close run details" title="Close run details" on:click={() => dialog.close()}><X size={18}/></button></div>
+            <h2 id="run-detail-title">{selected.name}</h2>
+            <dl class="run-metrics">
+                <div><dt>Distance</dt><dd>{selected.distance}<span> km</span></dd></div>
+                <div><dt>{selected.timeBasis === 'elapsed' ? 'Elapsed time' : 'Moving time'}</dt><dd>{selected.time}</dd></div>
+                <div><dt>Avg. pace</dt><dd>{selected.pace}<span> /km</span></dd></div>
+                <div><dt>Elevation gain</dt><dd>{selected.elevation}<span> m</span></dd></div>
+            </dl>
+            {#if selected.segments.length}
+                <div class="detail-map"><AtlasMap runs={[selected]} selectedId={selected.id}/></div>
+            {:else}<p class="muted">No GPS route recorded for this run.</p>{/if}
         {/if}
-    </div>
+    </dialog>
 </div>
 
 <style>
-    .runs-shell {
-        --card: #ffffff;
-        --card-soft: #f8fafc;
-        --ink: #111827;
-        --muted: #64748b;
-        --line: #d6dce5;
-        --accent: #ff6b00;
-        --shadow: rgba(15, 23, 42, 0.14);
-        --gloss: rgba(255, 255, 255, 0.76);
-        --gloss-soft: rgba(255, 255, 255, 0.36);
-        --fade: rgba(15, 23, 42, 0.04);
+    .running-atlas { --atlas-paper: #fff; --atlas-ink: #191b1a; --atlas-muted: #656c68; --atlas-line: #dce0dc; --atlas-soft: #f1f4f1; --atlas-orange: #d34c1d; --atlas-green: #267b5d; width: 100%; max-width: 960px; color: var(--atlas-ink); letter-spacing: 0; }
+    :global([data-theme="dark"]) .running-atlas { --atlas-paper: #090b0a; --atlas-ink: #f1f3ef; --atlas-muted: #a5afa7; --atlas-line: #303831; --atlas-soft: #171e19; --atlas-orange: #f67b42; --atlas-green: #7abc9c; }
+    .running-atlas :global(p), .running-atlas :global(h1), .running-atlas :global(h2) { color: var(--atlas-ink); }
+    .header-width { max-width: 672px; margin-inline: auto; }
+    .runs-heading { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin: 48px 0 26px; }
+    .eyebrow { font-size: 0.8rem; color: var(--atlas-muted) !important; margin: 0 0 8px; }
+    h1 { font-size: 2.5rem; line-height: 1.05; font-weight: 400; margin: 0; }
+    .intro { margin: 10px 0 0; font-size: 0.95rem; line-height: 1.4; color: var(--atlas-muted) !important; }
+    .archive-link { display: inline-flex; align-items: center; gap: 4px; color: var(--atlas-muted) !important; font-size: 0.85rem; white-space: nowrap; padding-bottom: 4px; }
+    .period-controls { display: flex; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid var(--atlas-line); padding-bottom: 8px; }
+    .period-controls button { font-family: inherit; font-size: 0.85rem; padding: 7px 13px; border-radius: 3px; color: var(--atlas-muted); }
+    .period-controls button:hover { background: var(--atlas-soft); }
+    .period-controls button.active { color: var(--atlas-paper) !important; background: var(--atlas-ink); }
+    .totals { display: flex; align-items: center; gap: 48px; padding: 22px 0; }
+    .totals strong { display: block; font-size: 1.65rem; font-weight: 400; line-height: 1.15; font-variant-numeric: tabular-nums; }
+    .totals strong span { font-size: 0.95rem; color: var(--atlas-muted); margin-left: 4px; }
+    .totals small { font-size: 0.78rem; color: var(--atlas-muted); display: block; margin-top: 3px; }
+    .totals p { font-size: 0.85rem; margin-left: auto; color: var(--atlas-muted) !important; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+    .section-heading h2 { font-size: 1.15rem; margin: 0; }
+    .section-heading > span { font-size: 0.8rem; }
+    .muted { color: var(--atlas-muted) !important; }
+    .route-collection { padding-top: 32px; scroll-margin-top: 24px; }
+    .route-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .route-print { text-align: left; border: 1px solid var(--atlas-line); border-radius: 5px; padding: 16px; background: var(--atlas-paper); display: grid; grid-template-rows: 20px 124px minmax(48px, auto) 24px; gap: 8px; min-width: 0; }
+    .route-print:hover { background: var(--atlas-soft); border-color: var(--atlas-muted); }
+    .print-date { color: var(--atlas-muted); font-size: 0.75rem; }
+    .print-art { display: grid; place-items: center; color: var(--atlas-muted); overflow: hidden; }
+    .print-art .route-glyph { width: 100%; height: 120px; }
+    .route-glyph path { fill: none; stroke: var(--atlas-orange); stroke-width: 1.65px; stroke-linejoin: round; stroke-linecap: round; }
+    .missing-art { display: grid; justify-items: center; gap: 8px; font-size: 0.75rem; }
+    .print-title { font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
+    .print-meta { display: flex; align-items: end; justify-content: space-between; gap: 8px; font-size: 0.8rem; }
+    .print-meta > span { color: var(--atlas-muted); }
+    .archive-pagination { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 24px; font-size: 0.8rem; }
+    .archive-pagination > div { display: flex; align-items: center; gap: 12px; }
+    .icon-button { width: 34px; height: 34px; display: inline-grid; place-items: center; border: 1px solid var(--atlas-line); border-radius: 4px; background: var(--atlas-paper); flex: 0 0 auto; }
+    .icon-button:hover { background: var(--atlas-soft); }
+    .icon-button:disabled { opacity: 0.3; }
+    .empty { color: var(--atlas-muted) !important; padding: 40px 0; }
+    .run-dialog { width: min(760px, calc(100% - 32px)); max-height: calc(100dvh - 48px); padding: 24px; border: 1px solid var(--atlas-line); border-radius: 6px; color: var(--atlas-ink); background: var(--atlas-paper); overscroll-behavior: contain; }
+    .run-dialog::backdrop { background: #0009; }
+    :global(body:has(.run-dialog[open])) { overflow: hidden; }
+    .detail-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+    .detail-top p { padding-top: 8px; }
+    .run-dialog h2 { font-size: 1.5rem; line-height: 1.25; margin: 8px 0 24px; overflow-wrap: anywhere; }
+    .run-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
+    dt { font-size: 0.78rem; color: var(--atlas-muted); }
+    dd { font-size: 1.25rem; margin: 3px 0 0; font-variant-numeric: tabular-nums; }
+    dd span { font-size: 0.85rem; color: var(--atlas-muted); margin-left: 4px; }
+    .detail-map :global(.atlas-map) { height: 300px; }
+    @media (max-width: 760px) { .route-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .totals { gap: 26px; } }
+    @media (max-width: 600px) {
+        .runs-heading { margin: 34px 0 22px; flex-wrap: wrap; }
+        h1 { font-size: 2rem; }
+        .archive-link { font-size: 0.8rem; }
+        .period-controls { flex-wrap: nowrap; justify-content: space-between; gap: 0; }
+        .period-controls button { padding: 9px 7px; font-size: 0.8rem; min-height: 40px; }
+        .totals { display: grid; grid-template-columns: 1.4fr 0.8fr 1fr; gap: 16px 8px; }
+        .totals strong { font-size: 1.4rem; white-space: nowrap; }
+        .totals strong span { font-size: 0.8rem; }
+        .totals p { display: none; }
+        .section-heading h2 { font-size: 1.05rem; }
+        .route-grid { grid-template-columns: minmax(0, 1fr); }
+        .route-print { grid-template-rows: 20px 124px minmax(30px, auto) 24px; }
+        .icon-button { width: 40px; height: 40px; }
+        .run-dialog { padding: 18px; }
+        .run-dialog h2 { font-size: 1.25rem; }
+        .run-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .detail-map :global(.atlas-map) { height: 260px; }
     }
-
-    :global([data-theme="dark"]) .runs-shell {
-        --card: #0b1220;
-        --card-soft: #111827;
-        --ink: #f8fafc;
-        --muted: #94a3b8;
-        --line: #334155;
-        --shadow: rgba(0, 0, 0, 0.46);
-        --gloss: rgba(255, 255, 255, 0.13);
-        --gloss-soft: rgba(255, 255, 255, 0.07);
-        --fade: rgba(0, 0, 0, 0.22);
-    }
-
-    .run-effort-card,
-    .run-activity-card,
-    .run-empty-card {
-        isolation: isolate;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid var(--line);
-        border-radius: 0.5rem;
-        background: linear-gradient(180deg, var(--card), var(--card-soft));
-        box-shadow: 0 16px 34px -28px var(--shadow);
-        color: var(--ink);
-    }
-
-    .run-effort-card::before,
-    .run-activity-card::before,
-    .run-empty-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        border-radius: inherit;
-        background:
-            radial-gradient(circle at 14% -8%, var(--gloss) 0, transparent 30%),
-            linear-gradient(120deg, var(--gloss-soft), transparent 38%),
-            linear-gradient(180deg, transparent 42%, var(--fade));
-        pointer-events: none;
-    }
-
-    .run-effort-card > *,
-    .run-activity-card > *,
-    .run-empty-card > * {
-        position: relative;
-        z-index: 1;
-    }
-
-    .run-year-summary {
-        max-width: 40rem;
-        margin: -0.65rem 0 1.65rem;
-        color: var(--muted) !important;
-        font-size: 1rem;
-        line-height: 1.58;
-    }
-
-    .run-year-summary strong {
-        color: var(--ink) !important;
-        font-weight: 700;
-    }
-
-    .run-section-kicker {
-        display: flex;
-        align-items: end;
-        justify-content: space-between;
-        gap: 1rem;
-        margin-bottom: 0.65rem;
-    }
-
-    .run-section-kicker p {
-        margin: 0;
-        color: var(--accent) !important;
-        font-size: 0.78rem;
-        letter-spacing: 0;
-        text-transform: uppercase;
-    }
-
-    .run-section-kicker span {
-        color: var(--muted) !important;
-        font-size: 0.78rem;
-        text-align: right;
-    }
-
-    .run-effort-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 0.65rem;
-    }
-
-    .run-effort-card {
-        padding: 0.78rem 0.85rem;
-    }
-
-    .run-effort-card span,
-    .run-effort-card strong,
-    .run-effort-card small {
-        display: block;
-    }
-
-    .run-effort-card span {
-        color: var(--accent) !important;
-        font-size: 0.72rem;
-        line-height: 1;
-        text-transform: uppercase;
-    }
-
-    .run-effort-card strong {
-        margin-top: 0.5rem;
-        color: var(--ink) !important;
-        font-size: 1.18rem;
-        line-height: 1.05;
-    }
-
-    .run-effort-card small {
-        margin-top: 0.45rem;
-        color: var(--muted) !important;
-        font-size: 0.68rem;
-        line-height: 1.25;
-    }
-
-    .run-page-count,
-    .run-activity-date,
-    .run-empty-card p {
-        color: var(--muted) !important;
-    }
-
-    .run-activity-card {
-        padding: 1rem;
-        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    }
-
-    .run-activity-card:hover {
-        border-color: rgba(255, 107, 0, 0.48);
-        box-shadow: 0 26px 50px -30px var(--shadow);
-        transform: translateY(-2px);
-    }
-
-    .run-activity-title {
-        margin: 0;
-        color: var(--ink) !important;
-        font-size: 1.125rem;
-        font-weight: 700;
-        line-height: 1.25;
-    }
-
-    .run-activity-date {
-        flex: 0 0 auto;
-        margin-left: 1rem;
-        font-size: 0.875rem;
-    }
-
-    .run-metric-label,
-    .run-metric-value {
-        display: block;
-    }
-
-    .run-metric-label {
-        color: var(--muted) !important;
-        font-size: 0.75rem;
-        line-height: 1.35;
-    }
-
-    .run-metric-value {
-        margin: 0;
-        color: var(--ink) !important;
-        line-height: 1.35;
-    }
-
-    .run-map-shell {
-        border-radius: 0.42rem;
-        overflow: hidden;
-        border: 1px solid color-mix(in srgb, var(--line) 74%, transparent);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    }
-
-    .run-empty-card p {
-        margin: 0;
-    }
-
-    @media (max-width: 640px) {
-        .run-effort-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .run-section-kicker {
-            display: block;
-        }
-
-        .run-section-kicker span {
-            display: block;
-            margin-top: 0.35rem;
-            text-align: left;
-        }
-    }
+    @media (max-width: 360px) { .period-controls button { padding-inline: 5px; } .totals strong { font-size: 1.2rem; } }
 </style>
-

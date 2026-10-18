@@ -19,6 +19,7 @@
     $: routeCoordinates = decodePolyline(polyline);
     $: routeShape = getRouteShape(routeCoordinates);
     $: routeFrameHeight = frameHeightFor(routeShape);
+    $: routePreview = projectRoute(routeCoordinates);
     
     onMount(() => {
         if (!browser) return;
@@ -104,6 +105,10 @@
             
             // Create the map with pre-positioned view
             map = new mapboxgl.Map(mapOptions);
+            map.on('error', () => {
+                mapError = 'Map unavailable';
+                mapLoaded = true;
+            });
             
             // Hide map until it's fully ready
             if (mapContainer) {
@@ -355,6 +360,28 @@
         }
     }
     
+    function projectRoute(coordinates) {
+        if (!coordinates || coordinates.length < 2) return null;
+        const latitudes = coordinates.map(point => point[0]);
+        const longitudes = coordinates.map(point => point[1]);
+        const minLat = Math.min(...latitudes);
+        const maxLat = Math.max(...latitudes);
+        const minLng = Math.min(...longitudes);
+        const maxLng = Math.max(...longitudes);
+        const correction = Math.cos((minLat + maxLat) / 2 * Math.PI / 180);
+        const spanX = (maxLng - minLng) * correction;
+        const spanY = maxLat - minLat;
+        const scale = Math.min(340 / Math.max(spanX, 0.00001), 240 / Math.max(spanY, 0.00001));
+        const points = coordinates.map(([lat, lng]) => [
+            (400 - spanX * scale) / 2 + (lng - minLng) * correction * scale,
+            (300 - spanY * scale) / 2 + (maxLat - lat) * scale
+        ]);
+        return {
+            points: points.map(point => point.map(value => value.toFixed(2)).join(',')).join(' '),
+            start: points[0], end: points.at(-1)
+        };
+    }
+
     function calculateRouteDistance(coords) {
         let distance = 0;
         for (let i = 1; i < coords.length; i++) {
@@ -385,7 +412,13 @@
 {#if browser}
 <div class="route-map-frame relative w-full rounded-md overflow-hidden" data-route-id={id} style={`height: ${routeFrameHeight};`}>
     <!-- Loading placeholder shown until map is ready -->
-    {#if mapError}
+    {#if mapError && routePreview}
+    <svg class="route-preview absolute inset-0 z-10 h-full w-full" viewBox="0 0 400 300" role="img" aria-label="Recorded running route">
+        <polyline points={routePreview.points} fill="none" stroke="#ff5500" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx={routePreview.start[0]} cy={routePreview.start[1]} r="4" fill="#16a34a" stroke="white" stroke-width="1.5" />
+        <circle cx={routePreview.end[0]} cy={routePreview.end[1]} r="4" fill="#dc2626" stroke="white" stroke-width="1.5" />
+    </svg>
+    {:else if mapError}
     <div class="absolute inset-0 z-10 flex items-center justify-center bg-slate-700 bg-opacity-70">
         <p class="text-sm text-slate-300">{mapError}</p>
     </div>
@@ -418,6 +451,14 @@
 {/if}
 
 <style>
+    .route-preview {
+        background: #151515;
+    }
+
+    :global([data-theme="light"]) .route-preview {
+        background: #f1f3f5;
+    }
+
     /* Map container styles */
     .route-map {
         position: relative;

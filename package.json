@@ -12,13 +12,19 @@
 		"spotify:sync": "node scripts/sync-spotify.mjs",
 		"listens:sync": "node scripts/sync-spotify.mjs",
 		"listens:seed": "node scripts/seed-listens-snapshot.mjs",
-		"listens:backfill": "node scripts/import-spotify-backfill.mjs"
+		"listens:backfill": "node scripts/import-spotify-backfill.mjs",
+		"runs:import": "node scripts/import-runs.mjs",
+		"runs:test": "node --test scripts/import-runs.test.mjs"
 	},
 	"devDependencies": {
+		"@mapbox/polyline": "^1.2.1",
 		"@sveltejs/adapter-auto": "^4.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
+		"@turf/length": "^7.4.0",
 		"autoprefixer": "^10.4.14",
+		"csv-parse": "^7.0.3",
+		"fast-xml-parser": "^5.11.2",
 		"postcss": "^8.4.24",
 		"svelte": "^5.0.0",
 		"svelte-leafletjs": "^2.0.0",
@@ -26,8 +32,11 @@
 		"vite": "^5.4.11"
 	},
 	"dependencies": {
+		"@lucide/svelte": "^1.59.0",
 		"@supabase/supabase-js": "^2.50.1",
 		"@tailwindcss/vite": "^4.0.0",
+		"@turf/simplify": "^7.4.0",
+		"d3": "^7.9.0",
 		"leaflet": "^1.9.4",
 		"mapbox-gl": "^3.11.1",
 		"supabase": "^2.110.0"
