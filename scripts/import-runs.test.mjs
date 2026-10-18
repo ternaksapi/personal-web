@@ -13,6 +13,8 @@ import { publicRoutes, preparePublicSnapshot } from '../src/lib/server/run-snaps
 import { routeArtwork } from '../src/lib/runs/geometry.js';
 import { filterRuns, summarize, timeline, movingPace, paceLabel, progressSeries } from '../src/lib/runs/atlas.js';
 import { progressChart } from '../src/lib/runs/progress-chart.js';
+import { fastestWindow, calculateBestEfforts } from './lib/run-efforts.mjs';
+import { bestEfforts, effortTime } from '../src/lib/runs/best-efforts.js';
 
 const csv = 'Activity ID,Activity Date,Activity Name,Activity Type,Activity Description,Elapsed Time,Distance,Moving Time,Distance,Elevation Gain,Filename\r\n'
     + '123,"Jan 1, 2026, 12:00:00 AM","Morning, Run",Run,"Private\nnotes",2000,5.00,1800,5001.25,25,activities/123.gpx.gz\r\n'
@@ -98,8 +100,8 @@ test('reimporting updates metadata while preserving routes and deduplicating sta
     assert.equal(mergeRuns(first, [{ ...fromCsv, id: 'strava:999' }]).length, 2);
 });
 
-test('year totals and dates use Jakarta boundaries and keep exact distances for best equivalents', () => {
-    const run = parseActivitiesCsv(csv).entries[0].run;
+test('year totals and dates use Jakarta boundaries and return GPS best efforts', () => {
+    const run = { ...parseActivitiesCsv(csv).entries[0].run, bestEfforts: [{ meters: 5000, seconds: 1800 }] };
     const runs = [
         { ...run, id: 'a', startedAt: '2025-12-31T18:00:00.000Z' },
         { ...run, id: 'b', startedAt: '2025-12-31T16:00:00.000Z' }
@@ -110,6 +112,8 @@ test('year totals and dates use Jakarta boundaries and keep exact distances for 
     assert.equal(page.stats.totalDistance, '5.0');
     assert.equal(page.activities[0].date, 'January 1, 2026');
     assert.equal(page.stats.bestEfforts[1].time, '30:00');
+    assert.equal(page.stats.bestEfforts[1].timeBasis, 'elapsed');
+    assert.equal(page.stats.bestEfforts[1].method, 'gps');
 });
 
 test('CLI previews without writing, imports compressed routes, merges safely, and fails atomically', async t => {
@@ -132,6 +136,7 @@ test('CLI previews without writing, imports compressed routes, merges safely, an
     assert.equal(initial.runs[0].startedAt, '2026-01-01T00:00:00.000Z');
     assert(initial.runs[0].route);
     assert.equal(initial.runs[0].distanceMeters, 5001.25);
+    assert(initial.runs[0].bestEfforts.some(effort => effort.meters === 1000));
     assert.equal(execute('--apply').status, 0);
     assert.equal(JSON.parse(await fs.readFile(output, 'utf8')).runs.length, 1);
     const beforeFailure = await fs.readFile(output, 'utf8');
@@ -261,4 +266,66 @@ test('missing, singleton, and invalid GPS geometry cannot enter public routes', 
     assert([...publicRoutes(runs).values()].every(segments => segments.length === 0));
     const prepared = preparePublicSnapshot({ version: 1, importedAt: null, runs });
     assert(prepared.runs.every(run => run.route === null && run.segments.length === 0));
+});
+
+test('best windows find split records instead of scaling the full-run average pace', () => {
+    const samples = [{ distance: 0, time: 0 }, { distance: 1000, time: 300 }, { distance: 2000, time: 1200 }];
+    assert.equal(fastestWindow(samples, 1000), 300);
+    assert.equal(fastestWindow(samples, 2000), 1200);
+    assert.equal(fastestWindow(samples, 5000), null);
+    assert.equal(fastestWindow([], 1000), null);
+    assert.equal(fastestWindow(samples, 0), null);
+    const boundary = [{ distance: 0, time: 0 }, { distance: 200, time: 40 }, { distance: 700, time: 90 }, { distance: 1000, time: 390 }];
+    assert.equal(fastestWindow(boundary, 600), 70);
+});
+
+test('best windows include pauses inside an effort but not before its start', () => {
+    const samples = [{ distance: 0, time: 0 }, { distance: 500, time: 100 }, { distance: 500, time: 700 }, { distance: 1000, time: 800 }, { distance: 1500, time: 900 }];
+    assert.equal(fastestWindow(samples, 1000), 200);
+    assert.equal(fastestWindow(samples, 1500), 900);
+});
+
+test('GPS efforts do not bridge track gaps, missing timestamps, or backwards clocks', () => {
+    const point = (lat, seconds) => ({ lat, lon: 0, time: seconds === null ? null : new Date(Date.UTC(2026, 0, 1) + seconds * 1000).toISOString() });
+    const a = [point(0, 0), point(0.006, 300)];
+    const b = [point(0.1, 600), point(0.106, 900)];
+    assert.deepEqual(calculateBestEfforts([a, b]), []);
+    assert.deepEqual(calculateBestEfforts([[...a, point(0.05, null), ...b]]), []);
+    assert.deepEqual(calculateBestEfforts([[...a, point(0.012, 0), point(0.018, 300)]]), []);
+    const valid = calculateBestEfforts([[point(0, 0), point(0.01, 300), point(0.02, 1200)]]);
+    assert.equal(valid.length, 1);
+    assert.equal(valid[0].meters, 1000);
+    assert(valid[0].seconds > 260 && valid[0].seconds < 280);
+});
+
+test('best efforts follow year filters, retain source runs, and do not invent missing records', () => {
+    const runs = [
+        { id: 'old', year: 2025, bestEfforts: [{ meters: 1000, seconds: 260 }, { meters: 5000, seconds: 1500 }] },
+        { id: 'new', year: 2026, bestEfforts: [{ meters: 1000, seconds: 240 }, { meters: 5000, seconds: 1600 }] },
+        { id: 'missing', year: 2026, distanceMeters: 15000, durationSeconds: 3000 },
+        { id: 'invalid', year: 2026, bestEfforts: [{ meters: 1000, seconds: -10 }, { meters: 10000, seconds: NaN }] }
+    ];
+    const all = bestEfforts(runs);
+    assert.equal(all[0].run.id, 'new');
+    assert.equal(all[1].run.id, 'old');
+    assert.equal(all[2].seconds, null);
+    assert.equal(all[3].run, null);
+    assert.equal(bestEfforts(filterRuns(runs, 2025))[0].seconds, 260);
+    assert(bestEfforts([]).every(record => record.seconds === null));
+    assert.equal(effortTime(3599.8), '1:00:00');
+    assert.equal(effortTime(null), '--');
+});
+
+test('GPS efforts survive CSV-only reimports without publishing private track fields', () => {
+    const track = parseTrack(gpx);
+    const csvRun = parseActivitiesCsv(csv).entries[0].run;
+    const merged = mergeRuns([track], [csvRun]);
+    assert.deepEqual(merged[0].bestEfforts, track.bestEfforts);
+    assert.equal(merged[0].timeBasis, 'moving');
+    const prepared = preparePublicSnapshot({ version: 1, importedAt: null, runs: [{ ...merged[0], bestEfforts: [
+        ...track.bestEfforts.map(effort => ({ ...effort, privateSamples: 'Never publish' })),
+        { meters: 123, seconds: 10 }, { meters: 5000, seconds: -1 }
+    ] }] });
+    assert.deepEqual(prepared.runs[0].bestEfforts, track.bestEfforts);
+    assert(!JSON.stringify(prepared).includes('Never publish'));
 });

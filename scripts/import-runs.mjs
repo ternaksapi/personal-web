@@ -39,7 +39,7 @@ async function importCsv(filename, options, warnings) {
                 const relative = path.relative(root, resolved);
                 if (relative.startsWith('..') || path.isAbsolute(relative)) throw new Error('Route path leaves the export directory.');
                 const track = parseTrack(await readFile(resolved), routeFile);
-                if (track) run.route = track.route;
+                if (track) { run.route = track.route; run.bestEfforts = track.bestEfforts; }
             } catch (error) {
                 warnings.push(`Route for ${run.id} was not imported: ${error.message}`);
             }

@@ -99,6 +99,15 @@ mileage and break the pace line. The latest imported month is labelled with its
 data cutoff. Chart animations respect reduced motion. Journal entries open a
 static route map and activity details; route playback has been removed.
 
+Best times show the fastest continuous 1K, 5K, 10K and 15K windows found in the
+original GPX/TCX samples. They use GPS distance and elapsed timestamps, including
+stops, with interpolation at distance boundaries. These are GPS estimates, not
+Strava's official best-effort records or projections from a full run's pace.
+Missing timestamps, non-increasing clocks and track-segment gaps break efforts.
+Year filters apply to records too, and each record links to its source run.
+Only distance/time summaries are published, not timestamped GPS samples.
+Reimport older exports once to populate these records in existing snapshots.
+
 The original `src/lib/data/runs.json` is a Git-ignored local cache. Each normal
 import also prepares the publishable `runs-public.json` with full imported route
 geometry. There are no endpoint masks: recorded starts, ends, and other route

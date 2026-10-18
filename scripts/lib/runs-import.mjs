@@ -2,6 +2,7 @@ import { parse } from 'csv-parse/sync';
 import { XMLParser, XMLValidator } from 'fast-xml-parser';
 import polyline from '@mapbox/polyline';
 import length from '@turf/length';
+import { calculateBestEfforts } from './run-efforts.mjs';
 
 const array = value => value == null ? [] : Array.isArray(value) ? value : [value];
 const RUN_TYPES = new Set(['run', 'running', 'trailrun', 'virtualrun', '9', '53']);
@@ -191,7 +192,8 @@ export function parseTrack(content, filename = 'run.gpx') {
         elevationGainMeters,
         timeBasis: 'elapsed',
         source: 'track',
-        route: route.length > 1 ? polyline.encode(route.map(point => [point.lat, point.lon])) : null
+        route: route.length > 1 ? polyline.encode(route.map(point => [point.lat, point.lon])) : null,
+        bestEfforts: calculateBestEfforts(segments)
     });
 }
 
@@ -211,7 +213,10 @@ export function mergeRuns(existing, incoming) {
         merged.delete(previous.id);
         const preferred = previous.source === 'csv' && run.source === 'track' ? previous : run;
         const id = run.id.startsWith('strava:') ? run.id : previous.id;
-        merged.set(id, { ...preferred, id, route: run.route || previous.route });
+        merged.set(id, {
+            ...preferred, id, route: run.route || previous.route,
+            bestEfforts: run.bestEfforts?.length ? run.bestEfforts : previous.bestEfforts || []
+        });
     }
     return [...merged.values()].sort((a, b) => b.startedAt.localeCompare(a.startedAt) || a.id.localeCompare(b.id));
 }

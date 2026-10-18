@@ -1,6 +1,7 @@
 <script>
     import Header from '$lib/header.svelte';
     import ProgressChart from '$lib/runs/ProgressChart.svelte';
+    import BestTimes from '$lib/runs/BestTimes.svelte';
     import AtlasMap from '$lib/runs/AtlasMap.svelte';
     import ChevronLeft from '@lucide/svelte/icons/chevron-left';
     import ChevronRight from '@lucide/svelte/icons/chevron-right';
@@ -60,6 +61,7 @@
             <p>{period}</p>
         </div>
         <ProgressChart {series} {period} importedAt={data.importedAt}/>
+        <BestTimes runs={filtered} {period} on:select={event => selectRun(event.detail)}/>
         <section id="run-journal" class="route-collection" aria-label="Run journal">
             <div class="section-heading"><h2>The run journal</h2><span class="muted">{summary.count} {summary.count === 1 ? 'entry' : 'entries'}</span></div>
             {#if archive.length}

@@ -1,5 +1,6 @@
 import polyline from '@mapbox/polyline';
 import simplify from '@turf/simplify';
+import { validEfforts } from '../runs/best-efforts.js';
 
 export function publicRoutes(runs) {
     return new Map(runs.map(run => {
@@ -24,7 +25,8 @@ export function preparePublicSnapshot(snapshot) {
                 id: run.id, name: run.name, startedAt: run.startedAt,
                 distanceMeters: run.distanceMeters, durationSeconds: run.durationSeconds,
                 elevationGainMeters: run.elevationGainMeters, timeBasis: run.timeBasis,
-                source: run.source, route: segments.length ? polyline.encode(segments[0]) : null, segments
+                source: run.source, route: segments.length ? polyline.encode(segments[0]) : null, segments,
+                bestEfforts: validEfforts(run.bestEfforts)
             };
         })
     };

@@ -1,5 +1,6 @@
 import polyline from '@mapbox/polyline';
 import { publicRoutes } from './run-snapshot.js';
+import { bestEfforts, validEfforts } from '../runs/best-efforts.js';
 
 const TIME_ZONE = 'Asia/Jakarta';
 const atlasCache = new WeakMap();
@@ -18,7 +19,8 @@ function publicAtlas(snapshot) {
             distanceMeters: run.distanceMeters, durationSeconds: run.durationSeconds,
             distance: (run.distanceMeters / 1000).toFixed(1), time: formatTime(run.durationSeconds),
             timeBasis: run.timeBasis, pace: formatPace(run.durationSeconds, run.distanceMeters),
-            elevation: Math.round(run.elevationGainMeters), segments: routes.get(run.id) || []
+            elevation: Math.round(run.elevationGainMeters), segments: routes.get(run.id) || [],
+            bestEfforts: validEfforts(run.bestEfforts)
         };
     });
     atlasCache.set(snapshot, atlas);
@@ -56,16 +58,13 @@ export function buildRunsPage(snapshot, now = new Date()) {
         .sort((a, b) => b.startedAt.localeCompare(a.startedAt) || a.id.localeCompare(b.id));
     const totalDistance = runs.reduce((sum, run) => sum + run.distanceMeters, 0);
     const longestRun = runs.reduce((longest, run) => Math.max(longest, run.distanceMeters), 0);
-    const bestEfforts = [1000, 5000, 10000, 15000].map(meters => {
-        const eligible = runs.filter(run => run.distanceMeters >= meters * 0.995 && run.durationSeconds > 0);
-        const best = eligible.sort((a, b) => a.durationSeconds / a.distanceMeters - b.durationSeconds / b.distanceMeters)[0];
-        const seconds = best ? Math.round(best.durationSeconds * meters / best.distanceMeters) : null;
+    const records = bestEfforts(runs).map(({ meters, label, seconds, run }) => {
         return {
-            label: `${meters / 1000}K`, meters, seconds,
-            time: best ? formatTime(seconds) : '-',
-            pace: best ? formatPace(seconds, meters) : '',
-            activityName: best?.name || '',
-            activityDate: best ? dateLabel(best.startedAt, { month: 'short', day: 'numeric' }) : ''
+            label, meters, seconds, timeBasis: 'elapsed', method: 'gps',
+            time: run ? formatTime(seconds) : '-',
+            pace: run ? formatPace(seconds, meters) : '',
+            activityName: run?.name || '',
+            activityDate: run ? dateLabel(run.startedAt, { month: 'short', day: 'numeric' }) : ''
         };
     });
 
@@ -92,7 +91,7 @@ export function buildRunsPage(snapshot, now = new Date()) {
             totalDistance: (totalDistance / 1000).toFixed(1),
             longestRun: (longestRun / 1000).toFixed(1),
             year,
-            bestEfforts: runs.length ? bestEfforts : []
+            bestEfforts: runs.length ? records : []
         }
     };
 }
