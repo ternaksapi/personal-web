@@ -191,14 +191,14 @@
                 }
                 if (cell.glyph !== previousGlyph) paintGlyph(cell);
                 baseOpacity.data[index * 4 + 3] = Math.round((0.018 + energy * 0.12) * cell.visibility * 255);
-                crestOpacity.data[index * 4 + 3] = Math.round(crest * (dark ? 0.78 : 0.74) * cell.visibility * 255);
+                crestOpacity.data[index * 4 + 3] = Math.round(crest * (dark ? 0.5 : 0.46) * cell.visibility * 255);
             }
             baseMaskContext.putImageData(baseOpacity, 0, 0);
             crestMaskContext.putImageData(crestOpacity, 0, 0);
             // Only opacity is interpolated; glyph shapes stay at their native pixel resolution.
             composite(context, baseMask, dark ? '#849194' : '#778082');
             crestContext.clearRect(0, 0, surfaceWidth, surfaceHeight);
-            composite(crestContext, crestMask, dark ? '#f67b42' : '#d34c1d');
+            composite(crestContext, crestMask, dark ? '#9aaaca' : '#737fae');
             context.drawImage(crestLayer, 0, 0, surfaceWidth, surfaceHeight);
         }
 
