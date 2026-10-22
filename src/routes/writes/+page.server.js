@@ -1,57 +1,30 @@
-const MEDIUM_FEED_URL = 'https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@yusufhaikall';
+import { XMLParser } from 'fast-xml-parser';
+import { parseMediumFeed } from './medium-feed.js';
+
+const MEDIUM_FEED_URL = 'https://medium.com/feed/@yusufhaikall';
 const ARTICLE_CACHE_TTL_MS = 60 * 60 * 1000;
 const ARTICLE_CACHE_CONTROL = 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400';
+const feedParser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '@_',
+    parseTagValue: false,
+    trimValues: true,
+    isArray: name => name === 'item' || name === 'category'
+});
 
 let cachedArticles = null;
 let cacheExpiresAt = 0;
 let inFlightArticles = null;
 
-function transformArticle(item) {
-    let image = item.thumbnail;
-
-    if (!image) {
-        const imgMatch = item.content?.match(/<img[^>]+src="([^">]+)"/);
-        image = imgMatch ? imgMatch[1] : '/laptop placeholder.png';
-    }
-
-    const wordCount = item.content?.split(/\s+/).length || 0;
-    const readingTime = Math.max(1, Math.ceil(wordCount / 200));
-    const cleanDescription = item.description
-        ?.replace(/<[^>]*>/g, '')
-        ?.trim() || '';
-    const excerpt = cleanDescription
-        ? `${cleanDescription.substring(0, 200)}${cleanDescription.length > 200 ? '...' : ''}`
-        : '';
-
-    return {
-        title: item.title,
-        excerpt,
-        image,
-        href: item.link,
-        date: new Date(item.pubDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        }),
-        readTime: `${readingTime} min read`,
-        categories: item.categories || []
-    };
-}
-
-async function fetchArticles(requestFetch) {
-    const response = await requestFetch(MEDIUM_FEED_URL);
+export async function _fetchMediumArticles(requestFetch, url = MEDIUM_FEED_URL) {
+    const response = await requestFetch(url);
 
     if (!response.ok) {
         throw new Error(`Medium feed request failed with status ${response.status}`);
     }
 
-    const data = await response.json();
-
-    if (data.status !== 'ok' || !Array.isArray(data.items)) {
-        throw new Error(data.message || 'Medium feed returned an unexpected response');
-    }
-
-    return data.items.map(transformArticle);
+    const xml = await response.text();
+    return parseMediumFeed(xml, feedParser);
 }
 
 async function getArticles(requestFetch) {
@@ -60,7 +33,7 @@ async function getArticles(requestFetch) {
     }
 
     if (!inFlightArticles) {
-        inFlightArticles = fetchArticles(requestFetch)
+        inFlightArticles = _fetchMediumArticles(requestFetch)
             .then(articles => {
                 cachedArticles = articles;
                 cacheExpiresAt = Date.now() + ARTICLE_CACHE_TTL_MS;
